@@ -115,16 +115,20 @@ def ActualvsForecast(area, timeres, date, month, year):
         Year = year.year
 
 @energy_group56.command()
-def login():
-    url = baseURL + 'login'
-    username = click.prompt("Username")
-    password = click.prompt("Password", hide_input=True)
+@click.option('--username', required=True, type = str)
+@click.option('--passw', required=True, type = str)
+def login(username, passw):
+    url = baseURL + '/Login'
     data = {
-        'username' : username
-        'password' : password
+        'username' : username,
+        'password' : passw
     }
-    headers = {'content-type': 'application/x-www-form-urlencoded'}
-    Post = requests.post(url, data = data, headers = headers)
+    p = requests.post(url, data = data)
+
+@energy_group56.command()
+def logout():
+    url = baseURL + '/Logout'
+
 
 if __name__ == '__main__':
     energy_group56()
