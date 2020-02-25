@@ -58,7 +58,70 @@ def ActualTotalLoad(area, timeres, date, month, year):
         Year = month.year
     if(year != None):
         Year = year.year
-    click.echo(f"area = {area}, timeres = {timeres}, day = {Day}")
+
+@energy_group56.command()
+@click.option('--area', required=True, type = str)
+@click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
+@click.option('--type', required=True)
+@optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
+@optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
+@optgroup.option('--month', type=Date(formats=['%Y-%m']))
+@optgroup.option('--year', type=Date(formats=['%Y']))
+def AggregatedGenerationPerType(area, timeres, type, date, month, year):
+    if(date != None):
+        Day = date.day
+        Month = date.month
+        Year = date.year
+    if(month != None):
+        Month = month.month
+        Year = month.year
+    if(year != None):
+        Year = year.year
+
+@energy_group56.command()
+@click.option('--area', required=True, type = str)
+@click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
+@optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
+@optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
+@optgroup.option('--month', type=Date(formats=['%Y-%m']))
+@optgroup.option('--year', type=Date(formats=['%Y']))
+def DayAheadTotalLoadForecast(area, timeres, date, month, year):
+    if(date != None):
+        Day = date.day
+        Month = date.month
+        Year = date.year
+    if(month != None):
+        Month = month.month
+        Year = month.year
+    if(year != None):
+        Year = year.year
+
+@energy_group56.command()
+@click.option('--area', required=True, type = str)
+@click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
+@optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
+@optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
+@optgroup.option('--month', type=Date(formats=['%Y-%m']))
+@optgroup.option('--year', type=Date(formats=['%Y']))
+def ActualvsForecast(area, timeres, date, month, year):
+    if(date != None):
+        Day = date.day
+        Month = date.month
+        Year = date.year
+    if(month != None):
+        Month = month.month
+        Year = month.year
+    if(year != None):
+        Year = year.year
+
+@energy_group56.command()
+def login():
+    username = click.prompt("Username")
+    password = click.prompt("Password", hide_input=True)
+    click.echo(f"{username}, {password}")
+
+
+
 
 if __name__ == '__main__':
     energy_group56()
