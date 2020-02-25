@@ -116,12 +116,15 @@ def ActualvsForecast(area, timeres, date, month, year):
 
 @energy_group56.command()
 def login():
+    url = baseURL + 'login'
     username = click.prompt("Username")
     password = click.prompt("Password", hide_input=True)
-    click.echo(f"{username}, {password}")
-
-
-
+    data = {
+        'username' : username
+        'password' : password
+    }
+    headers = {'content-type': 'application/x-www-form-urlencoded'}
+    Post = requests.post(url, data = data, headers = headers)
 
 if __name__ == '__main__':
     energy_group56()
