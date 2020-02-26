@@ -191,16 +191,12 @@ def HealthCheck():
 @energy_group56.command()
 def Reset():
     url = baseURL + '/Reset'
-    g = requests.get(url)
+    g = requests.post(url)
     if g['status'] == 'OK':
         click.echo("Reset completed successfully")
     else:
         click.echo("Reset was unsuccessfull")
 
-
-@energy_group56.command()   
-def Reset():
-    url = baseURL + '/Reset'
 
 if __name__ == '__main__':
     energy_group56()
