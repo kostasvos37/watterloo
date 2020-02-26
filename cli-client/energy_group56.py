@@ -43,6 +43,36 @@ def energy_group56():
     pass
 
 @energy_group56.command()
+@click.option('--username', required=True, type = str)
+@click.option('--passw', required=True, type = str)
+def login(username, passw):
+    url = baseURL + '/Login'
+    data = {
+        'username' : username,
+        'password' : passw
+    }
+    p = requests.post(url, data = data)
+
+    with open(tokenPATH + tokenNAME, 'w') as outfile:
+        json.dump(p, outfile)
+    
+    click.echo("You have logged in successfully.")
+
+@energy_group56.command()
+def logout():
+    url = baseURL + '/Logout'
+    with open(tokenPATH + tokenNAME) as json_file:
+        f = json.load(json_file)
+        t = f['token']
+    p = requests.post(url, token = t)
+
+    if os.path.exists(tokenPATH + tokenNAME):
+        os.remove(tokenNAME)
+        click.echo("You have logged out successfully.")
+    else:
+        click.echo("The API token is missing.")
+
+@energy_group56.command()
 @click.option('--area', required=True, type = str)
 @click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
@@ -150,34 +180,27 @@ def ActualvsForecast(area, timeres, date, month, year):
     g = requests.get(url, token = t)
 
 @energy_group56.command()
-@click.option('--username', required=True, type = str)
-@click.option('--passw', required=True, type = str)
-def login(username, passw):
-    url = baseURL + '/Login'
-    data = {
-        'username' : username,
-        'password' : passw
-    }
-    p = requests.post(url, data = data)
-
-    with open(tokenPATH + tokenNAME, 'w') as outfile:
-        json.dump(p, outfile)
+def HealthCheck():
+    url = baseURL + '/HealthCheck'
+    g = requests.get(url)
+    if g['status'] == 'OK':
+        click.echo("Health check completed successfully")
+    else:
+        click.echo("Health check was unsuccessfull")
 
 @energy_group56.command()
-def logout():
-    url = baseURL + '/Logout'
-    with open(tokenPATH + tokenNAME) as json_file:
-        f = json.load(json_file)
-        t = f['token']
-    p = requests.post(url, token = t)
-
-    if os.path.exists(tokenPATH + tokenNAME):
-        os.remove(tokenNAME)
+def Reset():
+    url = baseURL + '/Reset'
+    g = requests.get(url)
+    if g['status'] == 'OK':
+        click.echo("Reset completed successfully")
     else:
-        click.echo("The API token is missing.")
+        click.echo("Reset was unsuccessfull")
 
 
-
+@energy_group56.command()   
+def Reset():
+    url = baseURL + '/Reset'
 
 if __name__ == '__main__':
     energy_group56()
