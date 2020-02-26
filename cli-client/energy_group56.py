@@ -1,9 +1,10 @@
-import click
-import requests
+import click, requests, json, os
 from datetime import datetime
 from click_option_group import optgroup, RequiredMutuallyExclusiveOptionGroup
 
 baseURL = 'https://localhost:8765/energy/api'
+tokenPATH = 'HOME'
+tokenNAME = 'softeng19bAPI.token'
 
 class Date(click.ParamType):
     name = 'date'
@@ -49,34 +50,44 @@ def energy_group56():
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
 def ActualTotalLoad(area, timeres, date, month, year):
+    url = baseURL + '/ActualTotalLoad/' + area + '/' + timeres
     if(date != None):
         Day = date.day
         Month = date.month
         Year = date.year
+        url = url + '/date/' + Year + '-' + Month + '-' + Day
     if(month != None):
         Month = month.month
         Year = month.year
+        url = url + '/month/' + Year + '-' + Month
     if(year != None):
         Year = year.year
-
+        url = url + '/year/' + Year
+    g = requests.get(url)
+  
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
 @click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
-@click.option('--type', required=True)
+@click.option('--productiontype', required=True)
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
 @optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
-def AggregatedGenerationPerType(area, timeres, type, date, month, year):
+def AggregatedGenerationPerType(area, timeres, productiontype, date, month, year):
+    url = baseURL + '/AggregatedGenerationPerType/' + area + '/' + productiontype + '/' + timeres
     if(date != None):
         Day = date.day
         Month = date.month
         Year = date.year
+        url = url + '/date/' + Year + '-' + Month + '-' + Day
     if(month != None):
         Month = month.month
         Year = month.year
+        url = url + '/month/' + Year + '-' + Month
     if(year != None):
         Year = year.year
+        url = url + '/year/' + Year
+    g = requests.get(url)
 
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
@@ -86,15 +97,20 @@ def AggregatedGenerationPerType(area, timeres, type, date, month, year):
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
 def DayAheadTotalLoadForecast(area, timeres, date, month, year):
+    url = baseURL + '/DayAheadTotalLoadForecast/' + area + '/' + timeres
     if(date != None):
         Day = date.day
         Month = date.month
         Year = date.year
+        url = url + '/date/' + Year + '-' + Month + '-' + Day
     if(month != None):
         Month = month.month
         Year = month.year
+        url = url + '/month/' + Year + '-' + Month
     if(year != None):
         Year = year.year
+        url = url + '/year/' + Year
+    g = requests.get(url)
 
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
@@ -104,15 +120,20 @@ def DayAheadTotalLoadForecast(area, timeres, date, month, year):
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
 def ActualvsForecast(area, timeres, date, month, year):
+    url = baseURL + '/ActualvsForecast/' + area + '/' + timeres
     if(date != None):
         Day = date.day
         Month = date.month
         Year = date.year
+        url = url + '/date/' + Year + '-' + Month + '-' + Day
     if(month != None):
         Month = month.month
         Year = month.year
+        url = url + '/month/' + Year + '-' + Month
     if(year != None):
         Year = year.year
+        url = url + '/year/' + Year
+    g = requests.get(url)
 
 @energy_group56.command()
 @click.option('--username', required=True, type = str)
@@ -125,9 +146,23 @@ def login(username, passw):
     }
     p = requests.post(url, data = data)
 
+    with open(tokenPATH + tokenNAME, 'w') as outfile:
+        json.dump(p, outfile)
+
 @energy_group56.command()
 def logout():
     url = baseURL + '/Logout'
+    with open(tokenPATH + tokenNAME) as json_file:
+        f = json.load(json_file)
+        t = f['token']
+    p = requests.post(url, token = t)
+
+    if os.path.exists(tokenPATH + tokenNAME):
+        os.remove(tokenNAME)
+    else:
+        click.echo("The API token is missing.")
+
+
 
 
 if __name__ == '__main__':
