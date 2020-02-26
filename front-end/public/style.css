@@ -110,7 +110,8 @@ body {
       color: #DAD0CC; }
 
 .searchForm{
-  padding: 3rem 0; }
+  padding: 2rem 1rem;
+  font-size: 100%; }
 
 .map {
   background-color: rgb(255, 255, 255);
