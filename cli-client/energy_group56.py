@@ -63,7 +63,11 @@ def ActualTotalLoad(area, timeres, date, month, year):
     if(year != None):
         Year = year.year
         url = url + '/year/' + Year
-    g = requests.get(url)
+    with open(tokenPATH + tokenNAME) as json_file:
+        f = json.load(json_file)
+        t = f['token']
+    g = requests.get(url, token = t)
+    
   
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
@@ -87,7 +91,11 @@ def AggregatedGenerationPerType(area, timeres, productiontype, date, month, year
     if(year != None):
         Year = year.year
         url = url + '/year/' + Year
-    g = requests.get(url)
+    with open(tokenPATH + tokenNAME) as json_file:
+        f = json.load(json_file)
+        t = f['token']
+    g = requests.get(url, token = t)
+
 
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
@@ -110,7 +118,10 @@ def DayAheadTotalLoadForecast(area, timeres, date, month, year):
     if(year != None):
         Year = year.year
         url = url + '/year/' + Year
-    g = requests.get(url)
+    with open(tokenPATH + tokenNAME) as json_file:
+        f = json.load(json_file)
+        t = f['token']
+    g = requests.get(url, token = t)
 
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
@@ -133,7 +144,10 @@ def ActualvsForecast(area, timeres, date, month, year):
     if(year != None):
         Year = year.year
         url = url + '/year/' + Year
-    g = requests.get(url)
+    with open(tokenPATH + tokenNAME) as json_file:
+        f = json.load(json_file)
+        t = f['token']
+    g = requests.get(url, token = t)
 
 @energy_group56.command()
 @click.option('--username', required=True, type = str)
