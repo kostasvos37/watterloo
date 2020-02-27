@@ -19,7 +19,7 @@ export class Login extends Component {
         const p = this.password.current.value;
         console.log('Submitting...', u, p);
         
-        fetch('(`https://postman-echo.com/post',{
+        fetch('(`https://localhost:8765/api/routes/users',{
             method: 'POST',
             headers: {
                 'Content-Type':'application/x-www-form-urlencoded',
@@ -28,7 +28,9 @@ export class Login extends Component {
                 "username": u,
                 "password": p
             })
-        }).then((response) => response.json())
+        }).then((response) => {
+            console.log(response)
+            return response.json()})
         .then(json => {   
         
             console.log(json);

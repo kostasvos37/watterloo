@@ -3,7 +3,7 @@ from datetime import datetime
 from click_option_group import optgroup, RequiredMutuallyExclusiveOptionGroup
 
 baseURL = 'https://localhost:8765/energy/api'
-tokenPATH = 'HOME'
+tokenPATH = './'
 tokenNAME = 'softeng19bAPI.token'
 
 class Date(click.ParamType):
@@ -41,6 +41,36 @@ class Date(click.ParamType):
 @click.group()
 def energy_group56():
     pass
+
+@energy_group56.command()
+@click.option('--username', required=True, type = str)
+@click.option('--passw', required=True, type = str)
+def login(username, passw):
+    url = baseURL + '/Login'
+    data = {
+        'username' : username,
+        'password' : passw
+    }
+    p = requests.post(url, data = data)
+
+    with open(tokenPATH + tokenNAME, 'w') as outfile:
+        json.dump(p, outfile)
+    
+    click.echo("You have logged in successfully.")
+
+@energy_group56.command()
+def logout():
+    url = baseURL + '/Logout'
+    with open(tokenPATH + tokenNAME) as json_file:
+        f = json.load(json_file)
+        t = f['token']
+    p = requests.post(url, token = t)
+
+    if os.path.exists(tokenPATH + tokenNAME):
+        os.remove(tokenNAME)
+        click.echo("You have logged out successfully.")
+    else:
+        click.echo("The API token is missing.")
 
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
@@ -150,31 +180,67 @@ def ActualvsForecast(area, timeres, date, month, year):
     g = requests.get(url, token = t)
 
 @energy_group56.command()
-@click.option('--username', required=True, type = str)
-@click.option('--passw', required=True, type = str)
-def login(username, passw):
-    url = baseURL + '/Login'
-    data = {
-        'username' : username,
-        'password' : passw
-    }
-    p = requests.post(url, data = data)
-
-    with open(tokenPATH + tokenNAME, 'w') as outfile:
-        json.dump(p, outfile)
+def HealthCheck():
+    url = baseURL + '/HealthCheck'
+    g = requests.get(url)
+    if g['status'] == 'OK':
+        click.echo("Health check completed successfully")
+    else:
+        click.echo("Health check was unsuccessfull")
 
 @energy_group56.command()
-def logout():
-    url = baseURL + '/Logout'
-    with open(tokenPATH + tokenNAME) as json_file:
-        f = json.load(json_file)
-        t = f['token']
-    p = requests.post(url, token = t)
-
-    if os.path.exists(tokenPATH + tokenNAME):
-        os.remove(tokenNAME)
+def Reset():
+    url = baseURL + '/Reset'
+    g = requests.post(url)
+    if g['status'] == 'OK':
+        click.echo("Reset completed successfully")
     else:
-        click.echo("The API token is missing.")
+        click.echo("Reset was unsuccessfull")
+
+@energy_group56.command()
+@click.option('--passw', type = str)
+@click.option('--email', type = str)
+@click.option('--quota', type = str)
+@click.option('--source', type = str)
+@optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
+@optgroup.option('--newuser',type = str)
+@optgroup.option('--moduser',type = str)
+@optgroup.option('--userstatus',type = str)
+@optgroup.option('--newdata', type=click.Choice(['ActualTotalLoad', 'AggregatedGenerationPerType','DayAheadTotalLoadForecast']))
+
+def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
+    url = baseURL + '/Admin'
+    if(newuser != None):
+        url = url + '/users'
+        data = {
+        'username' : newuser,
+        'password' : passw,
+        'email' : email,
+        'quota' : quota
+        }
+        p = requests.post(url, data = data)
+        click.echo(f"Your API key is {p['key']}.")
+    if(moduser != None):
+        url = url + '/users/' + moduser
+        data = {
+        'password' : passw,
+        'email' : email,
+        'quota' : quota
+        }
+        p = requests.put(url, data = data)
+        if p['status'] != '400':
+            click.echo("Successfully added data.")
+        else:
+            click.echo("Error adding data.")
+    if(userstatus != None):
+        url = url + '/users/' + userstatus
+        g = requests.get(url)
+        if g['status'] != '400':
+            click.echo(g['data'])
+        else:
+            click.echo("Error.")
+ 
+
 
 
 
