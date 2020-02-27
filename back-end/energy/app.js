@@ -9,7 +9,7 @@ const DATLFRoutes = require('./api/routes/DayAheadTotalLoadForecast')
 const ActualvsForecastRoutes = require('./api/routes/ActualvsForecast')
 const usersRoutes = require('./api/routes/Login')
 const userslogoutroutes = require('./api/routes/Logout')
-//const adminsRoutes = require('./api/routes/users')
+const adminsRoutes = require('./api/routes/Users')
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -32,7 +32,7 @@ app.use('/DayAheadTotalLoadForecast', DATLFRoutes);
 app.use('/ActualvsForecast', ActualvsForecastRoutes);
 app.use('/Login', usersRoutes);
 app.use('/Logout', userslogoutroutes);
-//app.use('/users', adminsRoutes);
+app.use('/Users', adminsRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not found');
