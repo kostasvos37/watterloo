@@ -197,6 +197,53 @@ def Reset():
     else:
         click.echo("Reset was unsuccessfull")
 
+@energy_group56.command()
+@click.option('--passw', type = str)
+@click.option('--email', type = str)
+@click.option('--quota', type = str)
+@click.option('--source', type = str)
+@optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
+@optgroup.option('--newuser',type = str)
+@optgroup.option('--moduser',type = str)
+@optgroup.option('--userstatus',type = str)
+@optgroup.option('--newdata', type=click.Choice(['ActualTotalLoad', 'AggregatedGenerationPerType
+','DayAheadTotalLoadForecast'])
+def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
+    url = baseURL + '/Admin'
+    if(newuser != None):
+        url = url + '/users'
+        data = {
+        'username' : newuser,
+        'password' : passw
+        'email' : email,
+        'quota' : quota
+        }
+        p = requests.post(url, data = data)
+        click.echo(f"Your API key is {p['key']}.")
+    if(moduser != None):
+        url = url + '/users/' + moduser
+        data = {
+        'password' : passw
+        'email' : email,
+        'quota' : quota
+        }
+        p = requests.put(url, data = data)
+        if p['status'] != '400':
+            click.echo("Successfully added data.")
+        else:
+            click.echo("Error adding data.")
+    if(userstatus != None):
+        url = url + '/users/' + userstatus
+        g = requests.get(url)
+        if g['status'] != '400':
+            click.echo(g['data'])
+        else:
+            click.echo("Error.")
+ 
+
+
+
+
 
 if __name__ == '__main__':
     energy_group56()
