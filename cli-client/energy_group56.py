@@ -3,7 +3,7 @@ from datetime import datetime
 from click_option_group import optgroup, RequiredMutuallyExclusiveOptionGroup
 
 baseURL = 'https://localhost:8765/energy/api'
-tokenPATH = 'HOME'
+tokenPATH = './'
 tokenNAME = 'softeng19bAPI.token'
 
 class Date(click.ParamType):
@@ -206,15 +206,15 @@ def Reset():
 @optgroup.option('--newuser',type = str)
 @optgroup.option('--moduser',type = str)
 @optgroup.option('--userstatus',type = str)
-@optgroup.option('--newdata', type=click.Choice(['ActualTotalLoad', 'AggregatedGenerationPerType
-','DayAheadTotalLoadForecast'])
+@optgroup.option('--newdata', type=click.Choice(['ActualTotalLoad', 'AggregatedGenerationPerType','DayAheadTotalLoadForecast']))
+
 def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
     url = baseURL + '/Admin'
     if(newuser != None):
         url = url + '/users'
         data = {
         'username' : newuser,
-        'password' : passw
+        'password' : passw,
         'email' : email,
         'quota' : quota
         }
@@ -223,7 +223,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
     if(moduser != None):
         url = url + '/users/' + moduser
         data = {
-        'password' : passw
+        'password' : passw,
         'email' : email,
         'quota' : quota
         }
