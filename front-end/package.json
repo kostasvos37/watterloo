@@ -39,5 +39,6 @@
   "devDependencies": {
     "leaflet": "^1.6.0",
     "leaflet-react": "^3.0.5"
-  }
+  },
+  "proxy": "https://localhost:8765"
 }
