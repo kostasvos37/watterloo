@@ -19,7 +19,7 @@ export class Login extends Component {
         const p = this.password.current.value;
         console.log('Submitting...', u, p);
         
-        fetch('(`https://localhost:8765/api/routes/users',{
+        fetch('https://jsonplaceholder.typicode.com/todos/1',{
             method: 'POST',
             headers: {
                 'Content-Type':'application/x-www-form-urlencoded',
@@ -38,7 +38,7 @@ export class Login extends Component {
             //store the user's data in local storage
             //to make them available for the next
             //user's visit
-            localStorage.setItem('token', json.token);
+            localStorage.setItem('token', 'foo');
             localStorage.setItem('username', u);
             
             //use the setUserData function available
