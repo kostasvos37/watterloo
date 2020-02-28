@@ -26,13 +26,13 @@ app.use((req, res, next) => {
 });
 
 
-app.use('/ActualTotalLoad', ActualTotalLoadRoutes);
-app.use('/AggregatedGenerationPerType', AGPTRoutes);
-app.use('/DayAheadTotalLoadForecast', DATLFRoutes);
-app.use('/ActualvsForecast', ActualvsForecastRoutes);
-app.use('/Login', usersRoutes);
-app.use('/Logout', userslogoutroutes);
-app.use('/Users', adminsRoutes);
+app.use('/energy/api/ActualTotalLoad', ActualTotalLoadRoutes);
+app.use('/energy/api/AggregatedGenerationPerType', AGPTRoutes);
+app.use('/energy/api/DayAheadTotalLoadForecast', DATLFRoutes);
+app.use('/energy/api/ActualvsForecast', ActualvsForecastRoutes);
+app.use('/energy/api/Login', usersRoutes);
+app.use('/energy/api/Logout', userslogoutroutes);
+app.use('/energy/api/Admin/users', adminsRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not found');
