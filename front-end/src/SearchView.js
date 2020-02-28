@@ -19,7 +19,7 @@ class SearchView extends React.Component{
             <form classNameName = "searchForm">
                 <div className="form-group-lg">
                     <label htmlFor="countryFormControlSelect1">Select Country</label>
-                    <select class="form-control" id="countryFormControlSelect1">
+                    <select className="form-control" id="countryFormControlSelect1">
                     {countries.map(MakeItem)}
                     </select>
                 </div>
