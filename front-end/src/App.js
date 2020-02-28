@@ -1,25 +1,50 @@
-import React from "react"
-import Home from "./Home"
-import Header from "./Header"
-import Test from "./Test"
-import {Login} from "./Auth";
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
+import React, { Component } from 'react';
+import { HashRouter as Router, Route, Redirect } from "react-router-dom";
+import Header from './Header';
+import Main from './Home';
+//import { Login, Logout } from './Auth';
+import { UserProvider } from './UserContext';
+import { Login, Logout} from './Auth'
 
-class App extends React.Component{
-    render(){
-        return(
+class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      token: props.userData.token,
+      username: props.userData.username,
+      setUserData: (token, username) => this.setState({
+        token: token,
+        username: username
+      }),
+    };
+  }
+
+  renderProtectedComponent(ProtectedComponent) {
+    if (this.state.username !== null) {
+      return  (props) => <ProtectedComponent {...props} />;
+    }
+    else {
+      return (props) => <Redirect to='/login' />;
+    }
+  }
+
+  render() {
+    return (
+        <React.Fragment>
+          <UserProvider value={this.state}>
             <Router>
             <React.Fragment>
                 <Header />
-                <Switch>
-                <Route exact path = "/"><Home/></Route>
-                <Route path = "/test"><Test/></Route>
-                <Route exact path = "/login"><Login/></Route>
-                </Switch>
-            </React.Fragment>
+              
+                <Route path="/main" render={this.renderProtectedComponent(Main)} />
+                <Route path="/login" component={Login} />
+                </React.Fragment>
             </Router>
-        )
-    }
+          </UserProvider>
+        </React.Fragment>
+    );
+  }
 }
 
-export default App
+export default App;
