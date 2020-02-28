@@ -75,6 +75,19 @@ router.put('/:username', (req, res, next) => {
   });
 });
 });
-
-
+/*router.post('/Admin/:tables', (req, res, next) => {
+   var table = req.params.table;
+  if (username && password) {
+    con.query('INSERT INTO users (user_name, pass_word, email, quota, apikey) VALUES (?,?,?,?,?)', [username, password, email, quota, apikey], function(error, results, fields) {
+        res.status(200).json({
+          message: 'User added successfuly.'
+        })   
+      res.end();
+    });
+  } else {
+    res.send('Please enter Username and Password!');
+    res.end();
+  }
+});*/
+//thelei ftiaksimo
 module.exports = router;
