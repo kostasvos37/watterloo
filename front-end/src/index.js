@@ -9,4 +9,4 @@ const userData = {
 
 console.log(userData);
 
-ReactDOM.render( <App />, document.getElementById("root"))
+ReactDOM.render(<App userData={userData} />, document.getElementById('root'));

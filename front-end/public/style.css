@@ -1,124 +1,146 @@
-* {
-  margin: 0;
-  padding: 0; }
 
-*,
-*::before,
-*::after {
-  box-sizing: inherit; }
+body{
+  background-image: url('bg.jpg');
+  width:100%;
+}
+h1{
 
-html {
-  box-sizing: border-box;
-  font-size: 100%; }
-  @media only screen and (max-width: 68.75em) {
-    html {
-      font-size: 50%; } }
-
-body {
-  font-family: 'Nunito Sans', sans-serif;
-  font-weight: 400;
-  line-height: 1.6;
-  color: #655A56;
-  background-image: linear-gradient(to right bottom, rgb(52, 39, 131), rgb(130, 221, 244));
-  background-size: cover;
-  background-repeat: no-repeat;
-  min-height: calc(100vh - 2 * 4vw); }
-
-.my_container {
-  max-width: 80rem;
-  margin: 4vw auto;
-  background-color: #fff;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 2rem 6rem 0.5rem rgba(101, 90, 86, 0.2);
-  display: block; }
-
-
-.grid_container{
-  display: grid;
-  grid-template-rows: minmax(100rem, auto);
-  grid-template-columns: 1.1fr 2fr;
-  grid-template-areas: "searchForm map";
+	color: white;
+	font-size:200%;
+	float:center;
+	text-align: center;
+	font-family: sans-serif;
 }
 
+h2{
 
-.heading-2 {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #F59A83;
-  text-transform: uppercase;
-  margin-bottom: 2.5rem;
-  text-align: center;
-  transform: skewY(-3deg); }
+	color:#1C3D5E;
+	float:center;
+	text-align: center;
+	font-family: sans-serif;
+}
+/*gia th navigation bar*/
+nav { 
 
-.copyright {
-  color: #968B87;
-  font-size: 1.2rem;
-  margin-top: auto; }
+	width:100%;
+	height: 50px;
+	background: rgb(28,61,94,.8);
+	border-top: .25px solid #C483A2;
+	border-bottom: .25px solid #C483A2; 
+	position: sticky;
+	top: 0;
+}
+/*gia ta stoixeia ths baras*/
+nav ul{
 
-.link:link,
-.link:visited {
-  color: #968B87; }
+	display: flex;
+	float:none;
+	margin:0;
+	padding:0 0px;
 
-.loader {
-  margin: 5rem auto;
-  text-align: center; }
-  .loader svg {
-    height: 5.5rem;
-    width: 5.5rem;
-    fill: #F59A83;
-    transform-origin: 44% 50%;
-    animation: rotate 1.5s infinite linear; }
+}
 
-@keyframes rotate {
-  0% {
-    transform: rotate(0); }
-  100% {
-    transform: rotate(360deg); } }
+nav ul li{
 
-.my_header {
-  background-color: #F9F5F3;
-  display: flex;
-  height: 8rem;
-  align-items: center;
-  justify-content: space-between; }
-  .header__logo {
-    margin-left: 4rem;
-    height: 4.5rem;
-    display: block; }
+	list-style: none;
+}
+/*gia ta grammata ths baras*/
+nav ul li a{
 
-.search {
-  background-color: rgb(193, 231, 248);
-  border-radius: 10rem;
-  display: flex;
-  align-items: center;
-  padding-left: 3rem;
-  transition: all .3s;}
-  .search:focus-within {
-    transform: translateY(-2px);
-    box-shadow: 0 0.7rem 3rem rgba(101, 90, 86, 0.08); }
-  .search__field {
-    border: none;
-    background: none;
-    font-family: inherit;
-    color: inherit;
-    font-size: 3rem;
-    width: 30rem; }
-    .search__field:focus {
-      outline: none; }
-    .search__field::placeholder {
-      color: #DAD0CC; }
+	display: block;
+	color: #fff;
+	padding: 0 20px;
+	text-decoration: none;
+	text-transform: uppercase;
+	font-weight: bold;
+	line-height:50px;
+	font-family: sans-serif;
+}
+/*gia na antidraei otan erxetai se epafh me to pontiki*/
+nav ul li a:hover{
+	
+	background-color: rgb(28,61,94,.8);
+	border-top: .25px solid #C483A2;
+	border-bottom: .25px solid	#C483A2; 
+}
+/*gia to xroma toy home*/
+nav ul li a.active{
+ 	
+ 	color: #fff;
+ 	background-color: #C483A2;
+}
+/*otan erxetai se epafi to pontiki me to home*/
+nav ul li a.active:hover{
 
-.searchForm{
-  font-size: 100%; }
+	background-color: 	rgb(28,61,94,.8);
+	border-top: .25px solid 	#C483A2;
+	border-bottom: .25px solid 	#C483A2; 
+}
+/*gia to dropdown na emfanizetai otan bazoyme to pontiki*/
+nav  li  div {     
+  visibility: hidden;
+  position: absolute;
+  background-color: 	#C483A2;
+  opacity: 0;
+}
+/*gia to dropdown*/
+nav  li:hover  div { 
+  visibility: visible;
+  opacity: 1;
+  min-width: 100px;
+}
 
-.map {
-  background-color: rgb(255, 255, 255);
-  border-top: 1px solid #fff; 
-  }
-  .map_img {
-    width: 100%;
-    display: block;
-    height: 60%;
-    object-fit: cover;
-    }
+.country {
+	display: block;
+	color: #fff;
+	padding: 0 20px;
+	text-decoration: none;
+	text-transform: uppercase;
+	font-weight: bold;
+	line-height:50px;
+	font-family: sans-serif;
+}
+/*container for form*/
+.insert_book {
+	
+	display:box;
+	margin:0 auto;
+	width: 400px;
+	height: 150px;
+	background-color: #C6F9F5;
+	border-radius :50px;
+}
+.center{
+
+	text-align: center;
+	font-family: sans-serif;
+	padding-top: 10px;
+}
+.box {
+	
+	display: box;
+	margin: 0 auto;
+	width: 400px;
+	height: 380px;
+	background-color: #C6F9F5;
+	border-radius :50px;
+}
+.update_copy {
+	
+	display: box;
+	margin: 0 auto;
+	width: 400px;
+	height: 250px;
+	background-color: #C6F9F5;
+	border-radius :50px;
+}
+.box_2 {
+	
+	display: box;
+	margin: 0 auto;
+	width: 400px;
+	height: 400px;
+	background-color: #C6F9F5;
+	border-radius :50px;
+}
+

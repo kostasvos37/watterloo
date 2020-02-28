@@ -19,7 +19,7 @@ export class Login extends Component {
         const p = this.password.current.value;
         console.log('Submitting...', u, p);
         
-        fetch('(`https://localhost:8765/api/routes/users',{
+        fetch('energy/api/Login',{
             method: 'POST',
             headers: {
                 'Content-Type':'application/x-www-form-urlencoded',
@@ -38,7 +38,7 @@ export class Login extends Component {
             //store the user's data in local storage
             //to make them available for the next
             //user's visit
-            localStorage.setItem('token', json.token);
+            localStorage.setItem('token', 'foo');
             localStorage.setItem('username', u);
             
             //use the setUserData function available
@@ -109,7 +109,7 @@ export class Logout extends Component {
         //perform an ajax call to logout
         //and then clean up local storage and
         //context state.
-        fetch('https://localhost:8765/energy/api/Logout',{
+        fetch('energy/api/Logout',{
             method: 'POST',
             headers: {
                 'X-OBSERVATORY-AUTH': this.context.username,

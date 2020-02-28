@@ -1,5 +1,6 @@
 import React from "react"
-
+import "./forms.css"
+/*
 var countries     = ['Greece', 'Spain', 'Hungary', 'United Kingdom', 'Ireland', 'Sweden'],
             MakeItem = function(X) {
                 return <option>{X}</option>;
@@ -13,62 +14,57 @@ var arrayOptions     = ['ActualDataLoad', 'DayAheadForecast', 'AggregateProducti
         MakeItem = function(X) {
             return <option>{X}</option>;
     };
+    */
 class SearchView extends React.Component{
     render(){
         return (
-            <form classNameName = "searchForm">
-                <div className="form-group-lg">
-                    <label htmlFor="countryFormControlSelect1">Select Country</label>
-                    <select className="form-control" id="countryFormControlSelect1">
-                    {countries.map(MakeItem)}
-                    </select>
-                </div>
-                
-                <div className="form-group row">
-
-                    <label for="date" className="col-2 col-form-label">Date From</label>
-                    <div className="col-10">
-                        <input className="form-control" type="date" id="date"/>
-                    </div>
-                </div>
-
-                <div className="form-group row">
-                    <label for="date2" className="col-2 col-form-label">Date Until</label>
-                    <div className="col-10">
-                        <input className="form-control" type="date" id="date2"/>
-                    </div>
-                </div>
-                <div className="form-group-lg">
-                    <label htmlFor="arrays">Select Table</label>
-                    <select class="form-control" id="arrays">
-                    {arrayOptions.map(MakeItem)}
-                    </select>
-                </div>
-
-                <div className="form-group-lg">
-                    <label htmlFor="res">Select Resolution</label>
-                    <select class="form-control" id="res">
-                    {resolutions.map(MakeItem)}
-                    </select>
-                </div>
-
-
-                <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"/>
-                    <label className="form-check-label" for="inlineRadio1">Graph</label>
-                </div>
-                <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"/>
-                    <label className="form-check-label" for="inlineRadio2">Table</label>
-                </div>
-                <div className="form-group-lg">
-
-                <button type="submit" className="btn btn-primary mb-2">Submit</button>
-                </div>
-            </form>
+            
+        <div className="booking-form-box">
+        <div className="radio-btn">
+        <input type="radio" className="btn" name="check"/><span>Table</span>
+        <input type="radio" className="btn" name="check"/><span>Graph</span>
+        
+        </div>
+        
+        <div className="booking-form">
+        <label>Country</label>
+        <input type="text" className="form-control" placeholder="Select country"/>
+        
+        <div className="input-grp">
+        <label>Date From</label>
+        <input type="date" className="form-control select-date" />
+        </div>
+        
+        <div className="input-grp">
+        <label>Until</label>
+        <input type="date" className="form-control select-date" />
+        </div>
+        
+        <div className="input-grp">
+        <label>Actual Resolution</label>
+        <select className="custom-select">
+            <option value="1">15</option>
+            <option value="2">30</option>
+            <option value="3">60</option>
+            </select>
+            </div>
+            
+            <div className="input-grp">
+            <label>Actual</label>
+            <select className="custom-select">
+                <option>ActualTotalLoad</option>
+                <option>DayAheadTotalLoadForecast</option>
+                <option>AggregatedGenerationPerType</option>
+            </select>
+            </div>
+            
+            <div className="input-grp">
+                <button type="button" className="btn btn-primary flight">Show Results</button>
+            </div>
+        </div>
+        </div>
         )
     }
 }
 
 export default SearchView;
-

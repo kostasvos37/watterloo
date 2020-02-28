@@ -16,9 +16,13 @@ router.post('/', (req, res, next) => {
         createdActualTotalLoad: ActualTotalLoad
     });
 });
-router.get('/:AreaName/:Timezone', (req, res, next) => {
-    const id = req.params.AreaName;
-    const timeid = req.params.Timezone;
+router.get('/:AreaName/:Resolution/date/:datee', (req, res, next) => {
+    var AreaName = req.params.AreaName;
+    var Resolution = req.params.Resolution;
+    var date = req.params.datee;
+    var day = date.substring(0,2);
+    var month = date.substring(3,5);
+    var year = date.substring()
         if (id == 'Greece' && timeid == 'one') {
             res.status(200).json({
                 message: 'You are home',
