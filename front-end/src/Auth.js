@@ -19,7 +19,7 @@ export class Login extends Component {
         const p = this.password.current.value;
         console.log('Submitting...', u, p);
         
-        fetch('https://jsonplaceholder.typicode.com/todos/1',{
+        fetch('/energy/api/Login',{
             method: 'POST',
             headers: {
                 'Content-Type':'application/x-www-form-urlencoded',
