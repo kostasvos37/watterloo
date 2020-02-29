@@ -2,7 +2,7 @@ import click, requests, json, os
 from datetime import datetime
 from click_option_group import optgroup, RequiredMutuallyExclusiveOptionGroup
 
-baseURL = 'https://localhost:8765/energy/api'
+baseURL = 'http://localhost:8765/energy/api'
 tokenPATH = './'
 tokenNAME = 'softeng19bAPI.token'
 
@@ -79,12 +79,11 @@ def logout():
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
 @click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
-@click.option('--apikey', required=True, type=str)
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
 @optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
-def ActualTotalLoad(area, timeres, date, month, year, apikey):
+def ActualTotalLoad(area, timeres, date, month, year):
     url = baseURL + '/ActualTotalLoad/' + area + '/' + timeres
     if(date != None):
         Day = date.day
@@ -114,12 +113,11 @@ def ActualTotalLoad(area, timeres, date, month, year, apikey):
 @click.option('--area', required=True, type = str)
 @click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
 @click.option('--productiontype', required=True)
-@click.option('--apikey', required=True, type=str)
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
 @optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
-def AggregatedGenerationPerType(area, timeres, productiontype, apikey, date, month, year):
+def AggregatedGenerationPerType(area, timeres, productiontype, date, month, year):
     url = baseURL + '/AggregatedGenerationPerType/' + area + '/' + productiontype + '/' + timeres
     if(date != None):
         Day = date.day
@@ -136,7 +134,7 @@ def AggregatedGenerationPerType(area, timeres, productiontype, apikey, date, mon
     with open(tokenPATH + tokenNAME) as json_file:
         f = json.load(json_file)
         t = f['token']
-    g = requests.get(url, auth = apikey)
+    g = requests.get(url)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
     elif(g.status_code == 403):
@@ -150,12 +148,11 @@ def AggregatedGenerationPerType(area, timeres, productiontype, apikey, date, mon
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
 @click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
-@click.option('--apikey', required=True, type=str)
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
 @optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
-def DayAheadTotalLoadForecast(area, timeres, apikey, date, month, year):
+def DayAheadTotalLoadForecast(area, timeres, date, month, year):
     url = baseURL + '/DayAheadTotalLoadForecast/' + area + '/' + timeres
     if(date != None):
         Day = date.day
@@ -172,7 +169,7 @@ def DayAheadTotalLoadForecast(area, timeres, apikey, date, month, year):
     with open(tokenPATH + tokenNAME) as json_file:
         f = json.load(json_file)
         t = f['token']
-    g = requests.get(url, auth = apikey)
+    g = requests.get(url)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
     elif(g.status_code == 403):
@@ -185,12 +182,11 @@ def DayAheadTotalLoadForecast(area, timeres, apikey, date, month, year):
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
 @click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
-@click.option('--apikey', required=True, type=str)
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
 @optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
-def ActualvsForecast(area, timeres, apikey, date, month, year):
+def ActualvsForecast(area, timeres, date, month, year):
     url = baseURL + '/ActualvsForecast/' + area + '/' + timeres
     if(date != None):
         Day = date.day
@@ -207,7 +203,7 @@ def ActualvsForecast(area, timeres, apikey, date, month, year):
     with open(tokenPATH + tokenNAME) as json_file:
         f = json.load(json_file)
         t = f['token']
-    g = requests.get(url, auth = apikey)
+    g = requests.get(url)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
     elif(g.status_code == 403):
@@ -240,13 +236,12 @@ def Reset():
 @click.option('--email', type = str)
 @click.option('--quota', type = str)
 @click.option('--source', type = str)
-@click.option('--apikey', required = True, type = str)
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
 @optgroup.option('--newuser',type = str)
 @optgroup.option('--moduser',type = str)
 @optgroup.option('--userstatus',type = str)
 @optgroup.option('--newdata', type=click.Choice(['ActualTotalLoad', 'AggregatedGenerationPerType','DayAheadTotalLoadForecast']))
-def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source, apikey):
+def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
     url = baseURL + '/Admin'
     if(newuser != None):
         url = url + '/users'
@@ -256,7 +251,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source, ap
         'email' : email,
         'quota' : quota
         }
-        p = requests.post(url, data = data, auth = apikey)
+        p = requests.post(url, data = data)
         if(p.status_code == 401):
             click.echo(f'Error. Not authorized user.')
         elif(p.status_code == 402):
@@ -266,7 +261,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source, ap
         elif(p.status_code == 404):
             click.echo(f'Error. Bad request.')
         else:
-            click.echo(f"User {newuser} with API key: {p['key']} was created successfully.")
+            click.echo(f"User {newuser} was created successfully.")
     if(moduser != None):
         url = url + '/users/' + moduser
         data = {
@@ -274,7 +269,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source, ap
         'email' : email,
         'quota' : quota
         }
-        p = requests.put(url, data = data, auth = apikey)
+        p = requests.put(url, data = data)
         if(p.status_code == 401):
             click.echo(f'Error. Not authorized user.')
         elif(p.status_code == 402):
@@ -287,7 +282,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source, ap
             click.echo("Successfully modified user data.")
     if(userstatus != None):
         url = url + '/users/' + userstatus
-        g = requests.get(url, auth = apikey)
+        g = requests.get(url)
         if(g.status_code == 401):
             click.echo(f'Error. Not authorized user.')
         elif(g.status_code == 402):
