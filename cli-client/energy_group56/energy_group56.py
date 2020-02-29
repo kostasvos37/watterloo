@@ -243,6 +243,9 @@ def Reset():
 @optgroup.option('--newdata', type=click.Choice(['ActualTotalLoad', 'AggregatedGenerationPerType','DayAheadTotalLoadForecast']))
 def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
     url = baseURL + '/Admin'
+    with open(tokenPATH + tokenNAME, 'r') as tokenfile:
+        token = file.read().replace('\n', '')
+    head = {'Authorization': 'token {}'.format(token)}
     if(newuser != None):
         url = url + '/users'
         data = {
@@ -251,7 +254,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
         'email' : email,
         'quota' : quota
         }
-        p = requests.post(url, data = data)
+        p = requests.post(url, data = data, headers = head)
         if(p.status_code == 401):
             click.echo(f'Error. Not authorized user.')
         elif(p.status_code == 402):
@@ -269,7 +272,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
         'email' : email,
         'quota' : quota
         }
-        p = requests.put(url, data = data)
+        p = requests.put(url, data = data, headers = head)
         if(p.status_code == 401):
             click.echo(f'Error. Not authorized user.')
         elif(p.status_code == 402):
@@ -282,7 +285,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
             click.echo("Successfully modified user data.")
     if(userstatus != None):
         url = url + '/users/' + userstatus
-        g = requests.get(url)
+        g = requests.get(url, headers = head)
         if(g.status_code == 401):
             click.echo(f'Error. Not authorized user.')
         elif(g.status_code == 402):
@@ -296,7 +299,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
     if(newdata != None):
         url = url + newdata
         files = {'file': open(tokenPATH + source, 'rb')}
-        p = requests.post(url, files = files)
+        p = requests.post(url, files = files, headers = head)
         if(p.status_code == 401):
             click.echo(f'Error. Not authorized user.')
         elif(p.status_code == 402):
