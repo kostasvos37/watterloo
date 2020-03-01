@@ -53,7 +53,10 @@ class SearchView extends React.Component{
         console.log(`Country = ${country}  || Date = ${date}  ||    Table = ${table}  ||  
         Resolution = ${resolution}  ||  Presentation = ${presention}
         `)
+
     }
+
+
     render(){
         return (
             
