@@ -19,7 +19,7 @@ export class Login extends Component {
         const p = this.password.current.value;
         console.log('Submitting...', u, p);
         
-        fetch('https://jsonplaceholder.typicode.com/todos/1',{
+        fetch('http://localhost:8765/energy/api/Login',{
             method: 'POST',
             headers: {
                 'Content-Type':'application/x-www-form-urlencoded',
@@ -109,10 +109,11 @@ export class Logout extends Component {
         //perform an ajax call to logout
         //and then clean up local storage and
         //context state.
-        fetch('https://localhost:8765/energy/api/Logout',{
+        console.log(this.context.token)
+        fetch('http://localhost:8765/energy/api/Logout',{
             method: 'POST',
             headers: {
-                'X-OBSERVATORY-AUTH': this.context.username,
+                'X-TOKEN-AUTH': this.context.token,
                 'Content-Type':'application/x-www-form-urlencoded',
             }
         }).then(() => this.doLogout());
