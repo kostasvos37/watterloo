@@ -46,6 +46,7 @@ def energy_group56():
 @click.option('--username', required=True, type = str)
 @click.option('--passw', required=True, type = str)
 def login(username, passw):
+    """Basic command log into the command line interface."""
     url = baseURL + '/Login'
     data = {
         'username' : username,
@@ -63,6 +64,7 @@ def login(username, passw):
 
 @energy_group56.command()
 def logout():
+    """Basic logout command. Once called, the respective token string will be deleted from the client's memory. No options needed."""
     url = baseURL + '/Logout'
     with open(tokenPATH + tokenNAME) as json_file:
         f = json.load(json_file)
@@ -84,6 +86,7 @@ def logout():
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
 def ActualTotalLoad(area, timeres, date, month, year):
+    """Returns the requested data from the ActualTotalLoad table."""
     url = baseURL + '/ActualTotalLoad/' + area + '/' + timeres
     if(date != None):
         Day = date.day
@@ -97,7 +100,7 @@ def ActualTotalLoad(area, timeres, date, month, year):
     if(year != None):
         Year = year.year
         url = url + '/year/' + Year
-    g = requests.get(url, auth = apikey)
+    g = requests.get(url)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
     elif(g.status_code == 403):
@@ -118,6 +121,7 @@ def ActualTotalLoad(area, timeres, date, month, year):
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
 def AggregatedGenerationPerType(area, timeres, productiontype, date, month, year):
+    """Returns the requested data from the AggregatedGenerationPerType table."""
     url = baseURL + '/AggregatedGenerationPerType/' + area + '/' + productiontype + '/' + timeres
     if(date != None):
         Day = date.day
@@ -153,6 +157,7 @@ def AggregatedGenerationPerType(area, timeres, productiontype, date, month, year
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
 def DayAheadTotalLoadForecast(area, timeres, date, month, year):
+    """Returns the requested data from the DayAheadTotalLoadForecast table."""    
     url = baseURL + '/DayAheadTotalLoadForecast/' + area + '/' + timeres
     if(date != None):
         Day = date.day
@@ -187,6 +192,7 @@ def DayAheadTotalLoadForecast(area, timeres, date, month, year):
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
 def ActualvsForecast(area, timeres, date, month, year):
+    """Returns the requested data from the ActualvsForecast table."""    
     url = baseURL + '/ActualvsForecast/' + area + '/' + timeres
     if(date != None):
         Day = date.day
@@ -215,6 +221,7 @@ def ActualvsForecast(area, timeres, date, month, year):
 
 @energy_group56.command()
 def HealthCheck():
+    """Additional command for checking the health status of the backend sub-system"""
     url = baseURL + '/HealthCheck'
     g = requests.get(url)
     if g['status'] == 'OK':
@@ -224,6 +231,7 @@ def HealthCheck():
 
 @energy_group56.command()
 def Reset():
+    """Additional command for deleting every user in the database, apart from the main admin."""
     url = baseURL + '/Reset'
     g = requests.post(url)
     if g['status'] == 'OK':
@@ -242,6 +250,7 @@ def Reset():
 @optgroup.option('--userstatus',type = str)
 @optgroup.option('--newdata', type=click.Choice(['ActualTotalLoad', 'AggregatedGenerationPerType','DayAheadTotalLoadForecast']))
 def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
+    """This is the admin scope"""
     url = baseURL + '/Admin'
     with open(tokenPATH + tokenNAME, 'r') as tokenfile:
         token = file.read().replace('\n', '')
