@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 var mysql = require('mysql');
+var formidable = require('formidable');
+var csvToJson = require('convert-csv-to-json');
 
 var con = mysql.createConnection({
   host: "localhost",
@@ -44,9 +46,6 @@ router.post('/', (req, res, next) => {
 
 router.get('/:username', (req, res, next) => {
     var userName = req.params.username;
-    con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
   var sql = "SELECT * FROM users where user_name = ?";
   con.query(sql, userName, function (err, result, fields) {
     if (err) throw err;
@@ -55,7 +54,6 @@ router.get('/:username', (req, res, next) => {
          })
   });
 });
-});
 
 router.put('/:username', (req, res, next) => {
     var oldusername = req.params.username;
@@ -63,9 +61,6 @@ router.put('/:username', (req, res, next) => {
     var newpassword = req.body.password;
     var newemail = req.body.email;
     var newquota = req.body.quota;
-    con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
   var sql = "UPDATE users SET user_name = ?, pass_word = ?, email = ?, quota = ? WHERE user_name = ?";
   con.query(sql, [newuserName,newpassword,newemail,newquota,oldusername], function (err, result, fields) {
     if (err) throw err;
@@ -74,20 +69,23 @@ router.put('/:username', (req, res, next) => {
          })
   });
 });
-});
-/*router.post('/Admin/:tables', (req, res, next) => {
-   var table = req.params.table;
-  if (username && password) {
-    con.query('INSERT INTO users (user_name, pass_word, email, quota, apikey) VALUES (?,?,?,?,?)', [username, password, email, quota, apikey], function(error, results, fields) {
-        res.status(200).json({
-          message: 'User added successfuly.'
-        })   
-      res.end();
+
+/*
+router.post('/:table', (req, res, next) => {
+    const form = formidable({ multiples: true });
+
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            next(err);
+        return;
+        }
+        let json = csvToJson.fieldDelimiter(';') .getJsonFromCsv(files.file.path);
+        for(let i=0; i<json.length;i++){
+            con.query("INSERT INTO actualtotalload (, GradeB, GradeC) VALUES ?", [values], function(err, result, fields){
+    if (err) throw err;
     });
-  } else {
-    res.send('Please enter Username and Password!');
-    res.end();
-  }
-});*/
-//thelei ftiaksimo
+        }
+});
+*/
+
 module.exports = router;
