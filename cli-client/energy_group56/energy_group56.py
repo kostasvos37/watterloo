@@ -67,9 +67,11 @@ def login(username, passw):
 def logout():
     """Basic logout command. Once called, the respective token string will be deleted from the client's memory. No options needed."""
     url = baseURL + '/Logout'
-    with open(tokenPATH + tokenNAME ,'r') as infile:
-        f = infile.read()
-    p = requests.post(url, token = f)
+    with open(tokenPATH + tokenNAME ,'rb') as infile:
+        token = infile.read()
+        infile.close()
+    head = {'X-OBSERVATORY-AUTH': token}
+    p = requests.post(url, headers = head)
     
     if(p.status_code == 200):
         if os.path.exists(tokenPATH + tokenNAME):
@@ -103,7 +105,11 @@ def ActualTotalLoad(area, timeres, fileformat, date, month, year):
         url = url + '/year/' + Year
     if(fileformat != None):
         url = url + '&format=' + fileformat
-    g = requests.get(url)
+    with open(tokenPATH + tokenNAME ,'r') as infile:
+        token = infile.read()
+        infile.close()
+    head = {'X-OBSERVATORY-AUTH': token}
+    g = requests.get(url, headers = head)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
     elif(g.status_code == 403):
@@ -144,6 +150,11 @@ def AggregatedGenerationPerType(area, timeres, productiontype, fileformat, date,
     if(fileformat != None):
         url = url + '&format=' + fileformat
     g = requests.get(url)
+    with open(tokenPATH + tokenNAME ,'r') as infile:
+        token = infile.read()
+        infile.close()
+    head = {'X-OBSERVATORY-AUTH': token}
+    g = requests.get(url, headers = head)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
     elif(g.status_code == 403):
@@ -179,7 +190,11 @@ def DayAheadTotalLoadForecast(area, timeres, fileformat, date, month, year):
         url = url + '/year/' + Year
     if(fileformat != None):
         url = url + '&format=' + fileformat
-    g = requests.get(url)
+    with open(tokenPATH + tokenNAME ,'r') as infile:
+        token = infile.read()
+        infile.close()
+    head = {'X-OBSERVATORY-AUTH': token}
+    g = requests.get(url, headers = head)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
     elif(g.status_code == 403):
@@ -214,7 +229,11 @@ def ActualvsForecast(area, timeres, fileformat, date, month, year):
         url = url + '/year/' + Year
     if(fileformat != None):
         url = url + '&format=' + fileformat
-    g = requests.get(url)
+    with open(tokenPATH + tokenNAME ,'r') as infile:
+        token = infile.read()
+        infile.close()
+    head = {'X-OBSERVATORY-AUTH': token}
+    g = requests.get(url, headers = head)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
     elif(g.status_code == 403):
@@ -257,9 +276,10 @@ def Reset():
 def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
     """This is the admin scope"""
     url = baseURL + '/Admin'
-    """with open(tokenPATH + tokenNAME, 'r') as tokenfile:
-        token = file.read().replace('\n', '')
-    head = {'Authorization': 'token {}'.format(token)}"""
+    with open(tokenPATH + tokenNAME ,'r') as infile:
+        token = infile.read()
+        infile.close()
+    head = {'X-OBSERVATORY-AUTH': token}
     if(newuser != None):
         url = url + '/users'
         data = {
@@ -268,8 +288,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
         'email' : email,
         'quota' : quota
         }
-        #p = requests.post(url, data = data, headers = head)
-        p = requests.post(url, data = data)
+        p = requests.post(url, data = data, headers = head)
         if(p.status_code == 401):
             click.echo(f'Error. Not authorized user.')
         elif(p.status_code == 402):
@@ -324,8 +343,8 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
         elif(p.status_code == 404):
             click.echo(f'Error. Bad request.')
         else:
-            click.echo(f"totalRecordsInFile : {p.totalRecordsInFile}, totalRecordsImported : {p.totalRecordsImported}, totalRecordsInDatabase : {p.totalRecordsInDatabase}")
-        
+            click.echo(f'{g.content}')    
+
 def main():
     energy_group56()
 
