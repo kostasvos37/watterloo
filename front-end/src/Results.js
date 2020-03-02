@@ -1,23 +1,121 @@
-import React from "react"
+import React, { Component } from 'react';
 import "./Home.css"
+import qs from 'query-string'
+import { Table } from "react-bootstrap"
+import CanvasJSReact from './canvasjs.react';
+var CanvasJS = CanvasJSReact.CanvasJS;
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+
+
+class Graph extends Component {	
+    render(props) {
+      const options = {
+        title: {
+          text: this.props.title
+        },
+        data: [{				
+                  type: "column",
+                  dataPoints: this.props.data
+         }]
+     }
+          
+     return (
+        <div className="box-about">
+          <CanvasJSChart options = {options}
+              /* onRef = {ref => this.chart = ref} */
+          />
+        </div>
+      );
+    }
+  }
 
 class Results extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {
+          options: {},
+          results: []
+        }
+        
+        this.renderTableData.bind(this)
+      }
+
+    
+    componentDidMount(){
+        const params = qs.parse(this.props.location.search)
+        console.log(params)
+
+        const query = `http://localhost:8765/energy/api/${params.table}/${params.country}/PT${params.resolution}N/${params.dmy}/${params.date}`
+
+        // Perform an AjAX Call
+
+
+
+        fetch(query,{
+            method: 'GET',
+            headers: {
+                //'X-TOKEN-AUTH': this.context.token,
+                'Content-Type':'application/x-www-form-urlencoded',
+            }
+        }).then((response) => response.json())
+        .then(json => {   
+
+            
+            
+            var returnedValues = []
+            for (var i in json.result){
+                const obj = {
+                    label: json.result[i].DateTimeUTC,
+                    y: json.result[i].ActualTotalLoadValue
+                }
+                returnedValues.push(obj)
+            }
+                
+
+            this.setState({results: returnedValues })
+            this.setState({options: params })
+            
+            
+        });
+    
+    }
+
+    renderTableData() {
+        return this.state.results.map((elem) => {
+           const { label, y} = elem //destructuring
+           return (
+              <tr>
+                  <td>{label}</td>
+                  <td>{y}</td>
+              </tr>
+           )
+        })
+     }
+
+
     render(){
-        return (
+        console.log(this.state.options.presentation)
+        if(this.state.options.presentation === 'Table'){return (
         <div className="box-about">
-            <p>Μέσα από τη χρήση του WattErloo η ομάδα μας «ΤouLoumpes» θέλει να προσφέρει δεδομένα σχετικά με την αγορά της ηλεκτρικής ενέργειας στην Ευρώπη. Τα δεδομένα που διαχειριζόμαστε προέχονται απο τον διαδικτυακό τόπο transparency.entsoe.eu  και είναι κρίσιμα για τη διαφάνεια στη λειτουργία της αγοράς ηλεκτρικής ενέργειας και η διάθεση, οπτικοποίηση και ανάλυσή τους είναι απαραίτητες υπηρεσίες προς τους συμμετέχοντες στην αγορά, ανεξάρτητα από το ρόλο τους (παραγωγοί, πωλητές, συνεταιρισμοί κ.ά.). Κάθε χρήστης που έχει πρόσβαση στα δεδομένα (ύστερα από την πληκτρολόγηση έγκυρου ονόματος χρήστη και κωδικού) έχει τη δυνατότηα να επιλέξει να δει ένα από τα παρακάτω σύνολα δεδομένων:
-            </p>
-            <p>•	ActualTotalLoad. Περιέχει την πραγματική ενέργεια που καταναλώθηκε (φορτίο) σε μια χωρική εμβέλεια στην οποία αναφέρεται (χώρα ή ζώνη αγοράς). Οι τιμές που περιέχει (MWh) έχουν προκύψει από μετρήσεις του συστήματος διανομής ηλεκτρικής ενέργειας μετά την κατανάλωση, πχ την επόμενη μέρα.
-            </p>
-            <p>•	DayAheadTotalLoadForecast. Περιέχει μια πρόβλεψη για τη συνολική ζήτηση σε ενέργεια κατά την επόμενη μέρα, σε μια χωρική εμβέλεια στην οποία αναφέρεται (χώρα ή ζώνη αγοράς). Οι τιμές που περιέχει (MWh) υπολογίζονται από μαθηματικά μοντέλα πρόβλεψης. 
-            </p>
-            <p>•	AggregatedGenerationPerType. Αφορά την ανάλυση της πραγματικής παραγωγής ενέργειας στη χώρα ή ζώνη στην οποία αναφέρεται, ανάλογα με τον τρόπο παραγωγής (θερμική, αιολική, ηλιακή, πυρηνική κ.ά.). Περιέχει τιμές (MWh) που έχουν αθροιστεί ανά τρόπο παραγωγής ηλεκτρικής ενέργειας.
-            </p>
-            <p>
-                Για να δείτε τα παραπάνω σύνολα δεδομένων  πατήστε το κουμπί «Search» στην μπάρα.
-            </p>
+            <h1>Results for Greece</h1>
+            <Table striped bordered hover variant="dark">
+            <thead>
+                <tr>
+                <th>Timestamp</th>
+                <th>Total Load</th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.renderTableData()}
+            </tbody>
+            </Table>
         </div>
-        )
+        )}else{
+            return(
+                <Graph title = "Placeholder"  data= {this.state.results} />
+            )
+        }
     }
 }
 

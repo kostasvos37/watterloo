@@ -4,6 +4,7 @@ import Header from './Header';
 import Main from './Search';
 import Home from './Home';
 import Results from './Results'
+import Test from './Test'
 import { UserProvider } from './UserContext';
 import { Login, Logout} from './Auth'
 import {CSSTransition, TransitionGroup} from 'react-transition-group'
@@ -49,6 +50,7 @@ class App extends Component {
                       <Switch location = {location}>
             
                         <Route path="/main" render={this.renderProtectedComponent(Main)} />
+                        <Route path="/test" render={this.renderProtectedComponent(Test)} />
                         <Route path="/login" component={Login} />
                         <Route exact path="/" component={Home} />
                         <Route path="/logout" render={this.renderProtectedComponent(Logout)} />

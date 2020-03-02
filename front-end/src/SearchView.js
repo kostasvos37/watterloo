@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from "react-router";
+import qs from 'query-string';
 import "./forms.css"
 /*
 var countries     = ['Greece', 'Spain', 'Hungary', 'United Kingdom', 'Ireland', 'Sweden'],
@@ -60,40 +61,44 @@ class SearchView extends React.Component{
         console.log(event)
         event.preventDefault()
         var form = event.target.elements
-        const country = form.country.value
-        const date = form.date.value
-        const table = form.table.value
-        const resolution = form.resolution.value
-        const presention = form.check.value
+        var query = { 
+            country: form.country.value, 
+            date : form.date.value,
+            table : form.table.value,
+            resolution : form.resolution.value,
+            presentation : form.check.value,
+            dmy: ""
 
+        }
 
-        var dmy = ""
+        
+
         var errorMsg = ""
-        const len = date.length
+        const len = query.date.length
         if(len === 4){
             // YYYY correct
-            dmy = "year"
+            query.dmy = "year"
         }else if(len === 7){
-            dmy = "month"
+            query.dmy = "month"
         }
         else if(len === 10){
-            dmy = "day"
+            query.dmy = "date"
         }else {
             errorMsg = "Wrong Date format!"
             alert(errorMsg)
             return
         }
 
-        const searchURL = `?country=${country}?date=${date}?table=${table}?resolution=${resolution}?presentation=${presention}`
+        const searchString = qs.stringify(query);
         this.props.history.push({
             pathname: '/res',
-            search: searchURL
+            search: searchString
           })
 
 
 
-        console.log(`Country = ${country}  || Date = ${date}  ||    Table = ${table}  ||  
-        Resolution = ${resolution}  ||  Presentation = ${presention}
+        console.log(`Country = ${query.country}  || Date = ${query.date}  ||    Table = ${query.table}  ||  
+        Resolution = ${query.resolution}  ||  Presentation = ${query.presention}
         `)
 
     }
