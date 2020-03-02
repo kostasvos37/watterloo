@@ -1,4 +1,4 @@
-import click, requests, json, os
+import click, requests, json, csv, os
 from datetime import datetime
 from click_option_group import optgroup, RequiredMutuallyExclusiveOptionGroup
 
@@ -81,25 +81,28 @@ def logout():
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
 @click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
+@click.option('--fileformat', type=click.Choice(['csv', 'json'], case_sensitive=True))
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
 @optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
-def ActualTotalLoad(area, timeres, date, month, year):
+def ActualTotalLoad(area, timeres, fileformat, date, month, year):
     """Returns the requested data from the ActualTotalLoad table."""
     url = baseURL + '/ActualTotalLoad/' + area + '/' + timeres
     if(date != None):
-        Day = date.day
-        Month = date.month
-        Year = date.year
+        Day = str(date)[8:]
+        Month = str(date)[5:7]
+        Year = str(date)[:4]
         url = url + '/date/' + Year + '-' + Month + '-' + Day
     if(month != None):
-        Month = month.month
-        Year = month.year
+        Month = str(month)[5:7]
+        Year = str(month)[:4]
         url = url + '/month/' + Year + '-' + Month
     if(year != None):
-        Year = year.year
+        Year = str(year)[:4]
         url = url + '/year/' + Year
+    if(fileformat != None):
+        url = url + '&format=' + fileformat
     g = requests.get(url)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
@@ -109,6 +112,8 @@ def ActualTotalLoad(area, timeres, date, month, year):
         click.echo(f'Error. Bad request.')
     else:
         click.echo(f'{g.content}')
+
+
 
     
   
@@ -116,28 +121,28 @@ def ActualTotalLoad(area, timeres, date, month, year):
 @click.option('--area', required=True, type = str)
 @click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
 @click.option('--productiontype', required=True)
+@click.option('--fileformat', type=click.Choice(['csv', 'json'], case_sensitive=True))
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
 @optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
-def AggregatedGenerationPerType(area, timeres, productiontype, date, month, year):
+def AggregatedGenerationPerType(area, timeres, productiontype, fileformat, date, month, year):
     """Returns the requested data from the AggregatedGenerationPerType table."""
     url = baseURL + '/AggregatedGenerationPerType/' + area + '/' + productiontype + '/' + timeres
     if(date != None):
-        Day = date.day
-        Month = date.month
-        Year = date.year
+        Day = str(date)[8:]
+        Month = str(date)[5:7]
+        Year = str(date)[:4]
         url = url + '/date/' + Year + '-' + Month + '-' + Day
     if(month != None):
-        Month = month.month
-        Year = month.year
+        Month = str(month)[5:7]
+        Year = str(month)[:4]
         url = url + '/month/' + Year + '-' + Month
     if(year != None):
-        Year = year.year
+        Year = str(year)[:4]
         url = url + '/year/' + Year
-    with open(tokenPATH + tokenNAME) as json_file:
-        f = json.load(json_file)
-        t = f['token']
+    if(fileformat != None):
+        url = url + '&format=' + fileformat
     g = requests.get(url)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
@@ -152,28 +157,28 @@ def AggregatedGenerationPerType(area, timeres, productiontype, date, month, year
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
 @click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
+@click.option('--fileformat', type=click.Choice(['csv', 'json'], case_sensitive=True))
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
 @optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
-def DayAheadTotalLoadForecast(area, timeres, date, month, year):
+def DayAheadTotalLoadForecast(area, timeres, fileformat, date, month, year):
     """Returns the requested data from the DayAheadTotalLoadForecast table."""    
     url = baseURL + '/DayAheadTotalLoadForecast/' + area + '/' + timeres
     if(date != None):
-        Day = date.day
-        Month = date.month
-        Year = date.year
+        Day = str(date)[8:]
+        Month = str(date)[5:7]
+        Year = str(date)[:4]
         url = url + '/date/' + Year + '-' + Month + '-' + Day
     if(month != None):
-        Month = month.month
-        Year = month.year
+        Month = str(month)[5:7]
+        Year = str(month)[:4]
         url = url + '/month/' + Year + '-' + Month
     if(year != None):
-        Year = year.year
+        Year = str(year)[:4]
         url = url + '/year/' + Year
-    with open(tokenPATH + tokenNAME) as json_file:
-        f = json.load(json_file)
-        t = f['token']
+    if(fileformat != None):
+        url = url + '&format=' + fileformat
     g = requests.get(url)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
@@ -187,28 +192,28 @@ def DayAheadTotalLoadForecast(area, timeres, date, month, year):
 @energy_group56.command()
 @click.option('--area', required=True, type = str)
 @click.option('--timeres', required=True, type=click.Choice(['PT15M', 'PT30M','PT60M'], case_sensitive=True))
+@click.option('--fileformat', type=click.Choice(['csv', 'json'], case_sensitive=True))
 @optgroup.group(cls=RequiredMutuallyExclusiveOptionGroup)
 @optgroup.option('--date', type=Date(formats=['%Y-%m-%d']))
 @optgroup.option('--month', type=Date(formats=['%Y-%m']))
 @optgroup.option('--year', type=Date(formats=['%Y']))
-def ActualvsForecast(area, timeres, date, month, year):
+def ActualvsForecast(area, timeres, fileformat, date, month, year):
     """Returns the requested data from the ActualvsForecast table."""    
     url = baseURL + '/ActualvsForecast/' + area + '/' + timeres
     if(date != None):
-        Day = date.day
-        Month = date.month
-        Year = date.year
+        Day = str(date)[8:]
+        Month = str(date)[5:7]
+        Year = str(date)[:4]
         url = url + '/date/' + Year + '-' + Month + '-' + Day
     if(month != None):
-        Month = month.month
-        Year = month.year
+        Month = str(month)[5:7]
+        Year = str(month)[:4]
         url = url + '/month/' + Year + '-' + Month
     if(year != None):
-        Year = year.year
+        Year = str(year)[:4]
         url = url + '/year/' + Year
-    with open(tokenPATH + tokenNAME) as json_file:
-        f = json.load(json_file)
-        t = f['token']
+    if(fileformat != None):
+        url = url + '&format=' + fileformat
     g = requests.get(url)
     if(g.status_code == 402):
         click.echo(f'Error. You are out of quota.')
@@ -224,7 +229,7 @@ def HealthCheck():
     """Additional command for checking the health status of the backend sub-system"""
     url = baseURL + '/HealthCheck'
     g = requests.get(url)
-    if g['status'] == 'OK':
+    if g.status_code == 'OK':
         click.echo("Health check completed successfully.")
     else:
         click.echo("Health check was unsuccessfull.")
@@ -234,7 +239,7 @@ def Reset():
     """Additional command for deleting every user in the database, apart from the main admin."""
     url = baseURL + '/Reset'
     g = requests.post(url)
-    if g['status'] == 'OK':
+    if g.status_code == 'OK':
         click.echo("Reset completed successfully.")
     else:
         click.echo("Reset was unsuccessfull.")
@@ -252,9 +257,9 @@ def Reset():
 def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
     """This is the admin scope"""
     url = baseURL + '/Admin'
-    with open(tokenPATH + tokenNAME, 'r') as tokenfile:
+    """with open(tokenPATH + tokenNAME, 'r') as tokenfile:
         token = file.read().replace('\n', '')
-    head = {'Authorization': 'token {}'.format(token)}
+    head = {'Authorization': 'token {}'.format(token)}"""
     if(newuser != None):
         url = url + '/users'
         data = {
@@ -263,7 +268,8 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
         'email' : email,
         'quota' : quota
         }
-        p = requests.post(url, data = data, headers = head)
+        #p = requests.post(url, data = data, headers = head)
+        p = requests.post(url, data = data)
         if(p.status_code == 401):
             click.echo(f'Error. Not authorized user.')
         elif(p.status_code == 402):
