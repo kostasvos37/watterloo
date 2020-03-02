@@ -13,6 +13,15 @@ var con = mysql.createConnection({
   database: "energymarket"
 });
 
+function randomStr(len, arr) { 
+            var ans = ''; 
+            for (var i = len; i > 0; i--) { 
+                ans +=  
+                  arr[Math.floor(Math.random() * arr.length)]; 
+            } 
+            return ans; 
+        } 
+
 /*router.get('/:Pasxa', (req, res, next) => {
     var pasxa = req.params.Pasxa;
     res.status(200).json({
@@ -35,11 +44,16 @@ var con = mysql.createConnection({
 router.post('/', (req, res, next) => {
    var username = req.body.username;
    var password = req.body.password;
+   var key1 = randomStr(4, '12ab');
+   var key2 = randomStr(4, '32dc');
+   var key3 = randomStr(4, '54vg');
+   var dash = '-';
+   var Token = key1.concat(dash, key2, dash, key3);
   if (username && password) {
     con.query('SELECT * FROM users WHERE user_name = ? AND pass_word = ?', [username, password], function(error, results, fields) {
       if (results.length > 0) {
         res.status(200).json({
-          token: 'FOO'
+          token: Token
         })
       }
         else {
