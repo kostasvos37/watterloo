@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { HashRouter as Router, Route, Redirect } from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 import Header from './Header';
 import Main from './Search';
 import Home from './Home';
+import Results from './Results'
 import { UserProvider } from './UserContext';
 import { Login, Logout} from './Auth'
+import {CSSTransition, TransitionGroup} from 'react-transition-group'
+import './App.css'
 
 class App extends Component {
 
@@ -34,14 +37,28 @@ class App extends Component {
         <React.Fragment>
           <UserProvider value={this.state}>
             <Router>
-            <React.Fragment>
-                <Header />
-      
-                <Route path="/main" render={this.renderProtectedComponent(Main)} />
-                <Route path="/login" component={Login} />
-                <Route exact path="/" component={Home} />
-                <Route path="/logout" render={this.renderProtectedComponent(Logout)} />
+            
+                <Route render = {({location}) => (
+                  <React.Fragment>
+                  <Header />
+                  <TransitionGroup>
+                    <CSSTransition
+                      key = {location.key}
+                      timeout = {300}
+                      classNames = "fade">
+                      <Switch location = {location}>
+            
+                        <Route path="/main" render={this.renderProtectedComponent(Main)} />
+                        <Route path="/login" component={Login} />
+                        <Route exact path="/" component={Home} />
+                        <Route path="/logout" render={this.renderProtectedComponent(Logout)} />
+                        <Route path="/res" render={this.renderProtectedComponent(Results)} />
+                      </Switch>
+                      </CSSTransition>
+                    </TransitionGroup>
+                    
                 </React.Fragment>
+                )} />
             </Router>
           </UserProvider>
         </React.Fragment>

@@ -1,4 +1,5 @@
-import React from "react"
+import React, { Component } from 'react';
+import { withRouter } from "react-router";
 import "./forms.css"
 /*
 var countries     = ['Greece', 'Spain', 'Hungary', 'United Kingdom', 'Ireland', 'Sweden'],
@@ -15,6 +16,39 @@ var arrayOptions     = ['ActualDataLoad', 'DayAheadForecast', 'AggregateProducti
             return <option>{X}</option>;
     };
     */
+
+const MakeItem = function(X) {
+    return <option>{X}</option>;
+};
+
+
+class Text extends Component{    
+    render(){
+        return(
+            <React.Fragment>
+                <label>{this.props.label}</label>
+                <input type="text" className="form-control" required = "required" placeholder={this.props.placeholder} name = {this.props.name}/>
+            </React.Fragment>
+        )}
+}
+
+
+class Select extends Component{    
+
+    render(){
+
+        return(
+            <div className="input-grp">
+            <label>{this.props.label}</label>
+            <select className="custom-select" name ={this.props.name}>
+                {this.props.options.map(MakeItem)}
+            </select>
+        </div>
+        )}
+}
+
+
+
 class SearchView extends React.Component{
 
     constructor(props) {
@@ -23,6 +57,7 @@ class SearchView extends React.Component{
     }
 
     handleSubmit(event){
+        console.log(event)
         event.preventDefault()
         var form = event.target.elements
         const country = form.country.value
@@ -49,6 +84,13 @@ class SearchView extends React.Component{
             return
         }
 
+        const searchURL = `?country=${country}?date=${date}?table=${table}?resolution=${resolution}?presentation=${presention}`
+        this.props.history.push({
+            pathname: '/res',
+            search: searchURL
+          })
+
+
 
         console.log(`Country = ${country}  || Date = ${date}  ||    Table = ${table}  ||  
         Resolution = ${resolution}  ||  Presentation = ${presention}
@@ -62,34 +104,15 @@ class SearchView extends React.Component{
             
         <div className="booking-form-box">
         <form className="booking-form" onSubmit = {this.handleSubmit}>
-        <label>Country</label>
-        <input type="text" className="form-control" required = "required" placeholder="Select country" name = "country"/>
-        
-        
-        <label>Year/Month/Day</label>
-        <input type="text" placeholder = "YYYY-MM-DD" required = "required" className="form-control select-date" name = "date" />
 
+        <Text label = "Country" placeholder="Select country" name = "country"/>
         
-        <div className="input-grp">
-        <label>Actual Resolution</label>
-        <select className="custom-select" name = "resolution">
-            <option>15</option>
-            <option>30</option>
-            <option>60</option>
-            </select>
-            </div>
+        <Text label = "Year/Month/Day" placeholder="YYYY-MM-DD" name = "date"/>
+        
+        <Select label = "Resolution" name = "resolution" options = {["15", "30", "60"]} />
       
-            <div className="input-grp">
-            <label>Actual</label>
-            <select className="custom-select" name = "table">
-                <option>ActualTotalLoad</option>
-                <option>DayAheadTotalLoadForecast</option>
-                <option>AggregatedGenerationPerType</option>
-            </select>
-            </div>
+        <Select label = "Table" name = "table" options = {["ActualTotalLoad", "DayAheadTotalLoadForecast", "AggregatedGenerationPerType"]}/>
           
-          
-            
         <div className="radio-btn">
         <input type="radio" className="btn" name="check" value = "Table" checked onChange = {() => {}}/><span>Table</span>
         <input type="radio" className="btn" name="check" value = "Graph"/><span>Graph</span>
@@ -107,4 +130,4 @@ class SearchView extends React.Component{
     }
 }
 
-export default SearchView;
+export default withRouter(SearchView);

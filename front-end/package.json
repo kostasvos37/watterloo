@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "leaflet": "^1.6.0",
-    "leaflet-react": "^3.0.5"
+    "leaflet-react": "^3.0.5",
+    "react-transition-group": "^4.3.0"
   }
 }
