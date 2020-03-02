@@ -56,8 +56,9 @@ def login(username, passw):
     
     if(p.status_code == 200):
         click.echo(f'Υou have logged in successfully.')
-        with open(tokenPATH + tokenNAME, 'w') as outfile:
-            json.dump(p, outfile)
+        with open(tokenPATH + tokenNAME, 'wb') as outfile:
+            outfile.write(p.content)
+            outfile.close()
     else:
         click.echo(f'Log in error.')
 
@@ -66,12 +67,11 @@ def login(username, passw):
 def logout():
     """Basic logout command. Once called, the respective token string will be deleted from the client's memory. No options needed."""
     url = baseURL + '/Logout'
-    with open(tokenPATH + tokenNAME) as json_file:
-        f = json.load(json_file)
-        t = f['token']
-    p = requests.post(url, token = t)
+    with open(tokenPATH + tokenNAME ,'r') as infile:
+        f = infile.read()
+    p = requests.post(url, token = f)
     
-    if(g.status_code == 200):
+    if(p.status_code == 200):
         if os.path.exists(tokenPATH + tokenNAME):
             os.remove(tokenNAME)
             click.echo("You have logged out successfully.")
