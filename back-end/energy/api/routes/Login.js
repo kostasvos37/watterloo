@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 var mysql = require('mysql');
+var bodyParser = require('body-parser');
+router.use(bodyParser.json()); // support json encoded bodies
+router.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
 
 var con = mysql.createConnection({
   host: "localhost",
