@@ -1,13 +1,35 @@
-import React from "react"
+import React, { Component } from 'react';
+import CanvasJSReact from './canvasjs.react';
+var CanvasJS = CanvasJSReact.CanvasJS;
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-class Test extends React.Component{
-    render(){
-        return (
-            <div className="container">
-                <img src = "./europe.png" alt = ""/>
-            </div>
-        )
+class Test extends Component {	
+    render() {
+      const options = {
+        title: {
+          text: "Basic Column Chart in React"
+        },
+        data: [{				
+                  type: "column",
+                  dataPoints: [
+                      { label: "Apple",  y: 10  },
+                      { label: "Orange", y: 15  },
+                      { label: "Banana", y: 25  },
+                      { label: "Mango",  y: 30  },
+                      { label: "Grape",  y: 28  }
+                  ]
+         }]
+     }
+          
+     return (
+        <div className="box-about">
+          <CanvasJSChart options = {options}
+              /* onRef = {ref => this.chart = ref} */
+          />
+        </div>
+      );
     }
-}
+  }
 
-export default Test
+  export default Test
+  
