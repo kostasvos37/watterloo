@@ -54,8 +54,8 @@ def login(username, passw):
     }
     p = requests.post(url, data = data)
     
-    if(g.status_code == 200):
-        click.echo(f'Υou are successfully logged in.')
+    if(p.status_code == 200):
+        click.echo(f'Υou have logged in successfully.')
         with open(tokenPATH + tokenNAME, 'w') as outfile:
             json.dump(p, outfile)
     else:
