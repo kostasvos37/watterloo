@@ -3,6 +3,8 @@ const router = express.Router();
 var mysql = require('mysql');
 const querystring = require('querystring');
 const {Parser} = require('json2csv');
+var userauth = require('./UserAuth')
+
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -27,7 +29,7 @@ router.post('/', (req, res, next) => {
         createdActualTotalLoad: ActualTotalLoad
     });
 });
-router.get('/:AreaName/:Resolution/date/:datee', (req, res, next) => {
+router.get('/:AreaName/:Resolution/date/:datee', userauth, (req, res, next) => {
     var AreaName = req.params.AreaName;
     var Resolution = req.params.Resolution;
     var date = req.params.datee;
@@ -68,7 +70,7 @@ router.get('/:AreaName/:Resolution/date/:datee', (req, res, next) => {
     }
   });
 });
-router.get('/:AreaName/:Resolution/month/:datee', (req, res, next) => {
+router.get('/:AreaName/:Resolution/month/:datee', userauth, (req, res, next) => {
     var AreaName = req.params.AreaName;
     var Resolution = req.params.Resolution;
     var date = req.params.datee;
@@ -108,7 +110,7 @@ router.get('/:AreaName/:Resolution/month/:datee', (req, res, next) => {
     }
   });
 });
-router.get('/:AreaName/:Resolution/year/:datee', (req, res, next) => {
+router.get('/:AreaName/:Resolution/year/:datee', userauth, (req, res, next) => {
     var AreaName = req.params.AreaName;
     var Resolution = req.params.Resolution;
     var year = req.params.datee;

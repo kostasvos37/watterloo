@@ -52,6 +52,9 @@ router.post('/', (req, res, next) => {
   if (username && password) {
     con.query('SELECT * FROM users WHERE user_name = ? AND pass_word = ?', [username, password], function(error, results, fields) {
       if (results.length > 0) {
+        con.query('UPDATE users SET user_token = ? WHERE user_name = ?', [Token, username], function(error, results, fields) {
+          console.log('done');
+        });
         res.status(200).json({
           token: Token
         })

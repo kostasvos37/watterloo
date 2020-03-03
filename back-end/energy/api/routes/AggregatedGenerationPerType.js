@@ -3,6 +3,8 @@ const router = express.Router();
 var mysql = require('mysql');
 const querystring = require('querystring');
 const {Parser} = require('json2csv');
+var userauth = require('./UserAuth');
+
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -27,7 +29,7 @@ router.post('/', (req, res, next) => {
         createdAggregatedGenerationPerType: AggregatedGenerationPerType
     });
 });
-router.get('/:AreaName/:ProductionType/:Resolution/date/:datee', (req, res, next) => {
+router.get('/:AreaName/:ProductionType/:Resolution/date/:datee',userauth, (req, res, next) => {
     var AreaName = req.params.AreaName;
     var Resolution = req.params.Resolution;
     var Production = req.params.ProductionType;
@@ -36,8 +38,13 @@ router.get('/:AreaName/:ProductionType/:Resolution/date/:datee', (req, res, next
     var month = date.substring(5,7);
     var day = date.substring(8,10)
     let format = req.query.format;
-  var sql = "";
-  con.query(sql, [AreaName, year, month, day], function (err, result, fields) {
+    if (Production !== "AllTypes"){
+    var sql = "SELECT 'entso-e' AS Source, 'AggregatedGenerationPerType' AS Dataset, AreaName, AreaTypeCodeText AS AreaTypeCode, MapCodeText AS MapCode, ResolutionCodeText AS ResolutionCode, Year, Month, Day, DateTime AS DateTimeUTC, ProductionTypeText AS ProductionType, ActualGenerationOutput AS ActualGenerationOutputValue, UpdateTime AS UpdateTimeUTC FROM aggregatedgenerationpertype INNER JOIN areatypecode on aggregatedgenerationpertype.AreaTypeCodeId = areatypecode.Id  INNER JOIN mapcode on aggregatedgenerationpertype.MapCodeId = mapcode.Id INNER JOIN resolutioncode on aggregatedgenerationpertype.ResolutionCodeId = resolutioncode.Id INNER JOIN productiontype on aggregatedgenerationpertype.ProductionTypeId = productiontype.id WHERE AreaName=? AND ResolutionCodeText=? AND Year=? AND Month=? AND Day=? AND ProductionTypeText = ?";
+    }
+    else {
+          var sql = "SELECT 'entso-e' AS Source, 'AggregatedGenerationPerType' AS Dataset, AreaName, AreaTypeCodeText AS AreaTypeCode, MapCodeText AS MapCode, ResolutionCodeText AS ResolutionCode, Year, Month, Day, DateTime AS DateTimeUTC, ProductionTypeText AS ProductionType, ActualGenerationOutput AS ActualGenerationOutputValue, UpdateTime AS UpdateTimeUTC FROM aggregatedgenerationpertype INNER JOIN areatypecode on aggregatedgenerationpertype.AreaTypeCodeId = areatypecode.Id  INNER JOIN mapcode on aggregatedgenerationpertype.MapCodeId = mapcode.Id INNER JOIN resolutioncode on aggregatedgenerationpertype.ResolutionCodeId = resolutioncode.Id INNER JOIN productiontype on aggregatedgenerationpertype.ProductionTypeId = productiontype.id WHERE AreaName=? AND ResolutionCodeText=? AND Year=? AND Month=? AND Day=?";
+    }
+  con.query(sql, [AreaName, Resolution, year, month, day, Production], function (err, result, fields) {
     if (err) throw err;
     if (format !== 'undefined' && format) {
         if (format == 'json') {
@@ -47,7 +54,7 @@ router.get('/:AreaName/:ProductionType/:Resolution/date/:datee', (req, res, next
             res.end();
         }
         else if (format == 'csv') {
-            const fields = ['Source', 'Dataset', 'AreaName', 'Year', 'Month', 'Day', 'DateTimeUTC', 'ActualTotalLoadValue', 'UpdateTimeUTC'];
+            const fields = ['Source', 'Dataset', 'AreaName', 'AreaTypeCode', 'MapCode', 'ResolutionCode', 'Year', 'Month', 'Day', 'DateTimeUTC', 'ProductionType', 'ActualGenerationOutputValue', 'UpdateTimeUTC'];
             const json2csvParser = new Parser({ fields });
             const csv = json2csvParser.parse(result);
             res.send(Buffer.from(csv));
@@ -69,7 +76,7 @@ router.get('/:AreaName/:ProductionType/:Resolution/date/:datee', (req, res, next
     }
   });
 });
-router.get('/:AreaName/:ProductionType/:Resolution/month/:datee', (req, res, next) => {
+router.get('/:AreaName/:ProductionType/:Resolution/month/:datee', userauth, (req, res, next) => {
     var AreaName = req.params.AreaName;
     var Resolution = req.params.Resolution;
     var Production = req.params.ProductionType;
@@ -77,8 +84,13 @@ router.get('/:AreaName/:ProductionType/:Resolution/month/:datee', (req, res, nex
     var year = date.substring(0,4);
     var month = date.substring(5,7);
     let format = req.query.format;
-  var sql = "";
-  con.query(sql, [AreaName, year, month], function (err, result, fields) {
+    if (Production !== "AllTypes"){
+    var sql = "SELECT 'entso-e' AS Source, 'AggregatedGenerationPerType' AS Dataset, AreaName, AreaTypeCodeText AS AreaTypeCode, MapCodeText AS MapCode, ResolutionCodeText AS ResolutionCode, Year, Month, Day, ProductionTypeText AS ProductionType, SUM(ActualGenerationOutput) AS ActualGenerationOutputByDayValue FROM aggregatedgenerationpertype INNER JOIN areatypecode on aggregatedgenerationpertype.AreaTypeCodeId = areatypecode.Id  INNER JOIN mapcode on aggregatedgenerationpertype.MapCodeId = mapcode.Id INNER JOIN resolutioncode on aggregatedgenerationpertype.ResolutionCodeId = resolutioncode.Id INNER JOIN productiontype on aggregatedgenerationpertype.ProductionTypeId = productiontype.id WHERE AreaName=? AND ResolutionCodeText=? AND Year=? AND Month=? AND ProductionTypeText = ? GROUP BY Day ORDER BY Day";
+    }
+    else {
+          var sql = "SELECT 'entso-e' AS Source, 'AggregatedGenerationPerType' AS Dataset, AreaName, AreaTypeCodeText AS AreaTypeCode, MapCodeText AS MapCode, ResolutionCodeText AS ResolutionCode, Year, Month, Day, ProductionTypeText AS ProductionType, SUM(ActualGenerationOutput) AS ActualGenerationOutputByDayValue FROM aggregatedgenerationpertype INNER JOIN areatypecode on aggregatedgenerationpertype.AreaTypeCodeId = areatypecode.Id  INNER JOIN mapcode on aggregatedgenerationpertype.MapCodeId = mapcode.Id INNER JOIN resolutioncode on aggregatedgenerationpertype.ResolutionCodeId = resolutioncode.Id INNER JOIN productiontype on aggregatedgenerationpertype.ProductionTypeId = productiontype.id WHERE AreaName=? AND ResolutionCodeText=? AND Year=? AND Month=? GROUP BY Day ORDER BY Day";
+    }
+  con.query(sql, [AreaName, Resolution, year, month, Production], function (err, result, fields) {
     if (err) throw err;
     if (format !== 'undefined' && format) {
         if (format == 'json') {
@@ -110,14 +122,19 @@ router.get('/:AreaName/:ProductionType/:Resolution/month/:datee', (req, res, nex
     }
   });
 });
-router.get('/:AreaName/:ProductionTypo/:Resolution/year/:datee', (req, res, next) => {
+router.get('/:AreaName/:ProductionType/:Resolution/year/:datee',userauth, (req, res, next) => {
     var AreaName = req.params.AreaName;
     var Resolution = req.params.Resolution;
     var Production = req.params.ProductionType;
     var year = req.params.datee;
     let format = req.query.format;
-  var sql = "";
-  con.query(sql, [AreaName, year], function (err, result, fields) {
+     if (Production !== "AllTypes"){
+    var sql = "SELECT 'entso-e' AS Source, 'AggregatedGenerationPerType' AS Dataset, AreaName, AreaTypeCodeText AS AreaTypeCode, MapCodeText AS MapCode, ResolutionCodeText AS ResolutionCode, Year, Month, Day, ProductionTypeText AS ProductionType, SUM(ActualGenerationOutput) AS ActualGenerationOutputByMonthValue FROM aggregatedgenerationpertype INNER JOIN areatypecode on aggregatedgenerationpertype.AreaTypeCodeId = areatypecode.Id  INNER JOIN mapcode on aggregatedgenerationpertype.MapCodeId = mapcode.Id INNER JOIN resolutioncode on aggregatedgenerationpertype.ResolutionCodeId = resolutioncode.Id INNER JOIN productiontype on aggregatedgenerationpertype.ProductionTypeId = productiontype.id WHERE AreaName=? AND ResolutionCodeText=? AND Year=? AND ProductionTypeText = ? GROUP BY Month ORDER BY Month";
+    }
+    else {
+          var sql = "SELECT 'entso-e' AS Source, 'AggregatedGenerationPerType' AS Dataset, AreaName, AreaTypeCodeText AS AreaTypeCode, MapCodeText AS MapCode, ResolutionCodeText AS ResolutionCode, Year, Month, Day, ProductionTypeText AS ProductionType, SUM(ActualGenerationOutput) AS ActualGenerationOutputByMonthValue FROM aggregatedgenerationpertype INNER JOIN areatypecode on aggregatedgenerationpertype.AreaTypeCodeId = areatypecode.Id  INNER JOIN mapcode on aggregatedgenerationpertype.MapCodeId = mapcode.Id INNER JOIN resolutioncode on aggregatedgenerationpertype.ResolutionCodeId = resolutioncode.Id INNER JOIN productiontype on aggregatedgenerationpertype.ProductionTypeId = productiontype.id WHERE AreaName=? AND ResolutionCodeText=? AND Year=? GROUP BY Month ORDER BY Month";
+    }
+  con.query(sql, [AreaName, Resolution, year, Production], function (err, result, fields) {
     if (err) throw err;
     if (format !== 'undefined' && format) {
         if (format == 'json') {
@@ -160,6 +177,7 @@ router.get('/:AreaName/:ProductionTypo/:Resolution/year/:datee', (req, res, next
         day: day,
         month: month
     });*/
+    //comment
 
 
 /*router.get('/:AreaName/:Timezone', (req, res, next) => {
