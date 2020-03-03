@@ -3,7 +3,6 @@ import "./Home.css"
 import qs from 'query-string'
 import { Table } from "react-bootstrap"
 import CanvasJSReact from './canvasjs.react';
-var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 
@@ -113,7 +112,7 @@ class Results extends React.Component{
         </div>
         )}else{
             return(
-                <Graph title = "Placeholder"  data= {this.state.results} />
+                <Graph title = "Results"  data= {this.state.results} />
             )
         }
     }

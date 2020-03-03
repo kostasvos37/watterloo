@@ -64,12 +64,12 @@ export class Login extends Component {
                     <div className="col-lg-6 col-md-8 mx-auto">
                         <div className="card rounded shadow shadow-sm">
                             <div className="card-header">
-                                <h1 className="mb-0">Login</h1>
+                                <h2 className="mb-0">Login</h2>
                             </div>
                             <div className="card-body">
                                 <form className="form-lg" id="formLogin" onSubmit={this.handleSubmit}>
                                     <div className="form-group-lg">
-                                    <label htmlFor="username">Email address</label>
+                                    <label htmlFor="username">Username</label>
                                     <input type="text" className="form-control" id="username" ref={this.username} placeholder="Enter username"/>
                                     </div>
                                     <div className="form-group">
