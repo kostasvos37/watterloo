@@ -38,7 +38,7 @@ export class Login extends Component {
             //store the user's data in local storage
             //to make them available for the next
             //user's visit
-            localStorage.setItem('token', 'foo');
+            localStorage.setItem('token', json.token);
             localStorage.setItem('username', u);
             
             //use the setUserData function available

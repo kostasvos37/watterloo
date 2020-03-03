@@ -45,17 +45,17 @@ class Results extends React.Component{
         const params = qs.parse(this.props.location.search)
         console.log(params)
 
-        const query = `http://localhost:8765/energy/api/${params.table}/${params.country}/PT${params.resolution}N/${params.dmy}/${params.date}`
+        const query = `http://localhost:8765/energy/api/${params.table}/${params.country}/PT${params.resolution}M/${params.dmy}/${params.date}`
 
         // Perform an AjAX Call
 
-
+        console.log(query)
 
         fetch(query,{
             method: 'GET',
             headers: {
-                //'X-TOKEN-AUTH': this.context.token,
-                'Content-Type':'application/x-www-form-urlencoded',
+                'Content-Type':'application/json',
+                'X-OBSERVATORY-AUTH': localStorage.token,
             }
         }).then((response) => response.json())
         .then(json => {   
@@ -97,7 +97,7 @@ class Results extends React.Component{
         console.log(this.state.options.presentation)
         if(this.state.options.presentation === 'Table'){return (
         <div className="box-about">
-            <h1>Results for Greece</h1>
+            <h1>Results for {this.state.options.country}</h1>
             <Table striped bordered hover variant="dark">
             <thead>
                 <tr>
