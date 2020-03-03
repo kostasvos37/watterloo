@@ -55,23 +55,29 @@ class SearchView extends React.Component{
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelect = this.handleSubmit.bind(this);
     }
 
     handleSubmit(event){
         console.log(event)
         event.preventDefault()
         var form = event.target.elements
+        var production
+        if (form.type.value.length === 0){
+            production = "AllTypes"
+        } else{
+            production = form.type.value
+        }
+
         var query = { 
             country: form.country.value, 
             date : form.date.value,
             table : form.table.value,
             resolution : form.resolution.value,
             presentation : form.check.value,
+            productionType: production,
             dmy: ""
-
         }
-
-        
 
         var errorMsg = ""
         const len = query.date.length
@@ -104,6 +110,13 @@ class SearchView extends React.Component{
     }
 
 
+
+
+    handleSelect(event){
+        console.log(event)
+    }
+
+
     render(){
         return (
             
@@ -114,10 +127,13 @@ class SearchView extends React.Component{
         
         <Text label = "Year/Month/Day" placeholder="YYYY-MM-DD" name = "date"/>
         
-        <Select label = "Resolution" name = "resolution" options = {["15", "30", "60"]} />
+        <Select label = "Resolution" name = "resolution" options = {["15", "30", "60"]}/>
       
         <Select label = "Table" name = "table" options = {["ActualTotalLoad", "DayAheadTotalLoadForecast", "AggregatedGenerationPerType"]}/>
           
+        <label>Production Type (Optional)</label>
+        <input type="text" className="form-control"  placeholder="Production Type"  name ="type"/>
+
         <div className="radio-btn">
         <input type="radio" className="btn" name="check" value = "Table" checked onChange = {() => {}}/><span>Table</span>
         <input type="radio" className="btn" name="check" value = "Graph"/><span>Graph</span>

@@ -34,7 +34,9 @@ class Results extends React.Component{
         super(props);
         this.state = {
           options: {},
-          results: []
+          results: [],
+          type: [],
+          title: ""
         }
         
         this.renderTableData.bind(this)
@@ -44,8 +46,15 @@ class Results extends React.Component{
     componentDidMount(){
         const params = qs.parse(this.props.location.search)
         console.log(params)
+        var query
 
-        const query = `http://localhost:8765/energy/api/${params.table}/${params.country}/PT${params.resolution}M/${params.dmy}/${params.date}`
+        if(params.table === "AggregatedGenerationPerType"){
+            query = `http://localhost:8765/energy/api/${params.table}/${params.country}/${params.productionType}/PT${params.resolution}M/${params.dmy}/${params.date}`
+        }else{
+
+            
+            query = `http://localhost:8765/energy/api/${params.table}/${params.country}/PT${params.resolution}M/${params.dmy}/${params.date}`
+        }
 
         // Perform an AjAX Call
 
@@ -63,26 +72,67 @@ class Results extends React.Component{
             
             
             var returnedValues = []
-            for (var i in json.result){
-                const obj = {
-                    label: json.result[i].DateTimeUTC,
-                    y: json.result[i].ActualTotalLoadValue
+            var type = []
+            var title
+            if(params.table === "ActualTotalLoad"){
+                for (var i in json.result){
+                    const obj = {
+                        label: json.result[i].DateTimeUTC,
+                        y: json.result[i].ActualTotalLoadValue
+                    }
+                    returnedValues.push(obj)
+                    type.push("")
                 }
-                returnedValues.push(obj)
+                title = `Actual Total Load for ${params.country}`
+            }else if (params.table === "DayAheadTotalLoadForecast"){
+                    
+                if(params.dmy === "date"){
+                    for (var i in json.result){
+                        const obj = {
+                            label: i,
+                            y: json.result[i].DayAheadTotalLoadForecastByDayValue
+                        }
+                        returnedValues.push(obj)
+                        type.push("")
+                    }
+                    title = `Day Ahead Forecast for ${params.country}`
+                }else{
+
+                for (var i in json.result){
+                    const obj = {
+                        label: i,
+                        y: json.result[i].DayAheadTotalLoadForecastByMonthValue
+                    }
+                    returnedValues.push(obj)
+                    type.push("")
+                }
+                title = `Day Ahead Forecast for ${params.country}`
+                }
+            }else{
+                for (var i in json.result){
+                    const obj = {
+                        label: json.result[i].DateTimeUTC,
+                        y: json.result[i].ActualGenerationOutputValue
+                    }
+                    returnedValues.push(obj)
+                    type.push(json.result[i].ProductionType)
+                }
+                title = `Generation for ${params.productionType} for ${params.country}`
             }
                 
-
             this.setState({results: returnedValues })
             this.setState({options: params })
-            
-            
+            this.setState({type: type})
+            this.setState({title: title})
         });
-    
     }
 
     renderTableData() {
-        return this.state.results.map((elem) => {
-           const { label, y} = elem //destructuring
+        return this.state.results.map((elem, index) => {
+           var {label, y} = elem //destructuring
+           if(this.state.options.productionType === "AllTypes" && this.state.options.table === "AggregatedGenerationPerType"){
+               y = y + "    ("+this.state.type[index]+")"
+           }
            return (
               <tr>
                   <td>{label}</td>
@@ -97,7 +147,7 @@ class Results extends React.Component{
         console.log(this.state.options.presentation)
         if(this.state.options.presentation === 'Table'){return (
         <div className="box-about">
-            <h1>Results for {this.state.options.country}</h1>
+            <h1>{this.state.title}</h1>
             <Table striped bordered hover variant="dark">
             <thead>
                 <tr>
@@ -112,7 +162,7 @@ class Results extends React.Component{
         </div>
         )}else{
             return(
-                <Graph title = "Results"  data= {this.state.results} />
+                <Graph title = {this.state.title} data= {this.state.results} />
             )
         }
     }
