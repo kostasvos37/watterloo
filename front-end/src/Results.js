@@ -144,8 +144,15 @@ class Results extends React.Component{
 
 
     render(){
-        console.log(this.state.options.presentation)
-        if(this.state.options.presentation === 'Table'){return (
+        
+        
+        if(this.state.results.length === 0){
+            return (
+                <div className="box-about">
+                    <h1>Something went wrong :(</h1>
+                </div>    
+                )
+        } else if(this.state.options.presentation === 'Table'){return (
         <div className="box-about">
             <h1>{this.state.title}</h1>
             <Table striped bordered hover variant="dark">
