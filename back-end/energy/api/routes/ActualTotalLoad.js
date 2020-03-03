@@ -3,7 +3,8 @@ const router = express.Router();
 var mysql = require('mysql');
 const querystring = require('querystring');
 const {Parser} = require('json2csv');
-var userauth = require('./UserAuth')
+var userauth = require('./UserAuth');
+
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
