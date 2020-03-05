@@ -21,7 +21,20 @@ module.exports = async (req, res, next) => {
                 });
             }
             else {
-                next();
+            	con.query('UPDATE users SET quota = quota - 1 WHERE user_token = ?', [headerkey], function(error, results, fields){
+            		con.query('SELECT * FROM users WHERE user_token = ?', [headerkey], function(error, results, fields){
+            			//console.log(results[0].quota);
+            			if (results[0].quota==-1) {
+            			res.status(402).json({
+            				message: "Sorry mate, you are out of quota.",
+            				status:"402"
+            			});
+            		}
+            		else {
+            			next();
+            		}
+            		});
+            	});
             }
         }
         else {

@@ -56,8 +56,10 @@ def login(username, passw):
     
     if(p.status_code == 200):
         click.echo(f'Υou have logged in successfully.')
-        with open(tokenPATH + tokenNAME, 'wb') as outfile:
-            outfile.write(p.content)
+        x = p.json()
+        click.echo(str(x['token']))
+        with open(tokenPATH + tokenNAME, 'w') as outfile:
+            outfile.write(str(x['token']))
             outfile.close()
     else:
         click.echo(f'Log in error.')
@@ -108,6 +110,7 @@ def ActualTotalLoad(area, timeres, fileformat, date, month, year):
     with open(tokenPATH + tokenNAME ,'r') as infile:
         token = infile.read()
         infile.close()
+        click.echo(token)
     head = {'X-OBSERVATORY-AUTH': token}
     g = requests.get(url, headers = head)
     if(g.status_code == 402):
@@ -117,7 +120,8 @@ def ActualTotalLoad(area, timeres, fileformat, date, month, year):
     elif(g.status_code == 404):
         click.echo(f'Error. Bad request.')
     else:
-        click.echo(f'{g.content}')
+        y=g.json()
+        click.echo(y['result'])
 
 
 
@@ -302,6 +306,7 @@ def Admin(newuser, moduser, userstatus, newdata, passw, email, quota, source):
     if(moduser != None):
         url = url + '/users/' + moduser
         data = {
+        'username' : moduser,
         'password' : passw,
         'email' : email,
         'quota' : quota

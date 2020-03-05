@@ -81,7 +81,7 @@ router.post('/:table', (req, res, next) => {
         }
         let json = csvToJson.fieldDelimiter(';') .getJsonFromCsv(files.file.path);
         for(let i=0; i<json.length;i++){
-            con.query("INSERT INTO actualtotalload (, GradeB, GradeC) VALUES ?", [values], function(err, result, fields){
+            con.query("INSERT INTO actualtotalload ( id, entity, mapcode kai ta loipa) VALUES ?", [json[i]], function(err, result, fields){
     if (err) throw err;
     });
         }
